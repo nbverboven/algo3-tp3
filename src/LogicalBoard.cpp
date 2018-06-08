@@ -172,8 +172,17 @@ void LogicalBoard::startingPositions(const std::vector<std::pair<int, int>> &pos
 	for (int i = 0; i < 3; ++i)
 	{
 		// Si algún jugador tenía la pelota, se la saco
-		this->_team_A[i].loseBall();
-		this->_team_B[i].loseBall();
+		if (this->_team_A[i].getBall() != nullptr)
+		{
+			this->_free_ball = this->_team_A[i].getBall();
+			this->_team_A[i].loseBall();
+		}
+
+		if (this->_team_B[i].getBall() != nullptr)
+		{
+			this->_free_ball = this->_team_B[i].getBall();
+			this->_team_B[i].loseBall();
+		}
 
 		// Coloco a los jugadores en las posiciones correctas
 		this->_team_A[i].setPosition(position_A[i].first, position_A[i].second);

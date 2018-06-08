@@ -64,6 +64,11 @@ float Player::probQuite() const
 	return this->_p_quite;
 }
 
+Ball* Player::getBall() const
+{
+	return this->_ball;
+}
+
 std::ostream &operator<<(std::ostream &os, const Player &p)
 {
 	os << "(" << p._id << ", " << p._i << ", " << p._j;
