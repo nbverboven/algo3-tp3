@@ -4,12 +4,15 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <set>
 #include <memory>
 #include <string>
 #include <random>
 #include <algorithm>
 #include "Ball.h"
 #include "Player.h"
+#include "TeamMovements.h"
+#include "BoardState.h"
 #include "Defines.h"
 
 extern const std::vector<std::pair<int,int>> MOVES;
@@ -17,16 +20,14 @@ extern const std::vector<std::pair<int,int>> MOVES;
 class LogicalBoard
 {
 public:
-
 	/**
 	 * Constructor
 	 */
 	LogicalBoard(int columns, int rows, const std::vector<Player> &team_A, const std::vector<Player> &team_B);
 
-	/* Falta hacer */
-	// bool isValidTeamMove(const std::vector<Player> &team, const std::vector<move_str> &moves);
-	// void maketeamMove(std::vector<Player> team, const std::vector<move_str> &moves);
-	/* fin Falta hacer */	
+	bool isValidTeamMove(std::vector<Player> &team, TeamMovements &moves);
+
+	void maketeamMove(std::vector<Player> &team, TeamMovements &moves);
 
 	/**
 	 * player_without_ball le disputa la posesión de la pelota a
@@ -40,11 +41,15 @@ public:
 	 */
 	void fairFightBall(Player &p1, Player &p2);
 
+	/* Este metodo asume fuertemente que la pelota todavia no fue actualizada a su nueva posicion
+	y que la pelota esta libre. */
+	bool intercepted(const Player &curr_state_player) const;
+
 	/* Falta hacer */
-	// bool intercepted();
 	// void makeMove();
-	// void undoMove(board_state_str *last_state);
 	/* fin Falta hacer */
+
+	void undoMove(BoardState *last_state);
 
 	/**
 	 * Devuelve el nombre del ganador o "NINGUNO" en caso de empate
@@ -72,7 +77,7 @@ public:
 	 * posición válida dentro del campo de juego y false en 
 	 * caso contraro
 	 */
-	bool positionInBoard(unsigned int i, unsigned int j);
+	bool positionInBoard(std::pair<int, int> pos) const;
 
 	/**
 	 * Ubica a los jugadores en las posiciones iniciales y le da la
@@ -85,9 +90,7 @@ public:
 	                       const std::vector<std::pair<int, int>> &position_B,
 	                       std::string starting);
 
-	/* Falta hacer */
-	// void getState();
-	/* fin Falta hacer */
+	BoardState* getState() const;
 
 	/**
 	 * Devuelve las posiciones correspondientes al arco del equipo 
@@ -100,22 +103,13 @@ public:
 	 */
 	std::vector<Player>& getTeam(std::string team);
 
+	/**
+	 * Si la pelota está libre, devuelve un puntero a la misma.
+	 * Si no, devuelve nullptr
+	 */
+	Ball* getBall();
+
 	friend std::ostream& operator<<(std::ostream &os, const LogicalBoard &lb);
-
-
-	/* Ideas para las funciones que involucran mover a los equipos.
-	   Puede ser así o pueden ser clases, no sé */
-	// struct move_str
-	// {
-	// 	unsigned int p_id;
-	// 	std::string move_type;
-	// 	int move;
-	// } move_str;
-
-	// struct board_state_str
-	// {
-		
-	// } move_str;
 
 private:
 	// Par (puntaje equipo A, puntaje equipo B)
@@ -136,10 +130,7 @@ private:
 	// Puntero a la pelota
 	Ball *_free_ball;
 
-	/* TODO: ver cómo hacer
-	   Vendría a ser algo para guardar el estado anterior del
-	   tablero */
-	// _last_state;
+	BoardState *_last_state;
 
 };
 

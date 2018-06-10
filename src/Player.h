@@ -12,9 +12,11 @@ class Player
 {
 public:
 	/**
-	 * Constructor
+	 * Constructores
 	 */
 	Player(unsigned int player_id, float p_quite);
+	Player(const Player &p);
+	~Player();
 
 	/**
 	 * Ubica la pelota en alguna posición de la cancha.
@@ -64,10 +66,17 @@ public:
 	float probQuite() const;
 
 	/**
+	 * Devuelve el id del jugador
+	 */
+	unsigned int getId() const {return _id;}
+
+	std::pair<int, int> getPosition() const {return std::make_pair(_i, _j);}
+
+	/**
 	 * Devuelve un puntero a la pelota. Si el jugador no está 
 	 * en posesión de ella, devuelve nullptr
 	 */
-	Ball* getBall() const;
+	Ball* getBall();
 
 	friend std::ostream &operator<<(std::ostream &os, const Player &p);
 

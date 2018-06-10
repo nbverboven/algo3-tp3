@@ -27,18 +27,74 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<Player> &tea
 	}
 
 	this->_free_ball = nullptr;
-	// this->_last_state = ??;
+	this->_last_state = nullptr;
 }
 
-/* Falta hacer */
-// bool LogicalBoard::isValidTeamMove(const std::vector<Player> &team, const std::vector<move_str> &moves)
-// {
-// }
+bool LogicalBoard::isValidTeamMove(std::vector<Player> &team, TeamMovements &moves)
+{
+	bool valid = true;
 
-// void LogicalBoard::maketeamMove(std::vector<Player> team, const std::vector<move_str> &moves)
-// {
-// }
-/* fin Falta hacer */
+	// Exactamente un movimiento por jugador del equipo
+	for (Player &p : team)
+	{
+		valid = valid && moves.hasMovementAssigned(p.getId());
+	}
+
+	// Muevo a los jugadores
+	for (Player &p : team)
+	{
+		if (moves.getMovementType(p.getId()) == MOVIMIENTO)
+		{
+			p.move(moves.getMovementValue(p.getId()).first);
+		}
+		else if (p.getBall() == nullptr)
+		{
+			// Quiere pasar la pelota pero no la tiene
+			valid = false;
+		}
+	}
+
+	std::set<std::pair<int, int>> final_positions;
+	
+	for (Player &p : team)
+	{
+		final_positions.insert(p.getPosition());
+
+		// Todos los jugadores deben estar dentro de la cancha
+		valid = valid && positionInBoard(p.getPosition());
+	}
+
+	// Dos jugadores del mismo equipo no están en la misma posición
+	valid = valid && (final_positions.size() == team.size());
+
+	// Deshago los movimientos
+	for (Player &p : team)
+	{
+		p.undoMove();
+	}
+
+	return valid;
+}
+
+void LogicalBoard::maketeamMove(std::vector<Player> &team, TeamMovements &moves)
+{
+	for (Player &p : team)
+	{
+		if (moves.getMovementType(p.getId()) == MOVIMIENTO)
+		{
+			p.move((moves.getMovementValue(p.getId())).first);
+		}
+
+		/* Si el jugador pasó la pelota se setea la dirección y fuerza y se pierde 
+		   la posesión, luego el tablero detecta la pelota libre y la mueve en cada paso */
+		if (moves.getMovementType(p.getId()) == PASE)
+		{
+			this->_free_ball = p.getBall();
+			this->_free_ball->setMovement(moves.getMovementValue(p.getId()));
+			p.loseBall();
+		}
+	}
+}
 
 void LogicalBoard::fightBall(Player &player_with_ball, Player &player_without_ball)
 {
@@ -93,19 +149,69 @@ void LogicalBoard::fairFightBall(Player &p1, Player &p2)
 	this->_free_ball = nullptr;
 }
 
-/* Falta hacer */
-// bool LogicalBoard::intercepted()
-// {
-// }
+bool LogicalBoard::intercepted(const Player &curr_state_player) const
+{
+	bool result = true;
 
+	// Buscar el estado anterior del jugador
+	Player *prev_state_player = nullptr;
+
+	for (Player &p : (this->_last_state)->getPlayers(A))
+	{
+		if (p.getId() == curr_state_player.getId())
+		{
+			prev_state_player = &p;
+		}
+	}
+
+	for (Player &p : (this->_last_state)->getPlayers(B))
+	{
+		if (p.getId() == curr_state_player.getId())
+		{
+			prev_state_player = &p;
+		}
+	}
+
+	// Si se movio, no la interceptó
+	result = result && (prev_state_player->getPosition() == curr_state_player.getPosition());
+
+	// Si está en el camino, la intercepta
+	prev_state_player->backwardMove((this->_free_ball)->getMovementDirection());
+	result = result && (prev_state_player->getPosition() == (this->_free_ball)->getPosition());
+	prev_state_player->undoMove();
+
+	return result;
+}
+
+/* Falta hacer */
 // void LogicalBoard::makeMove()
 // {
 // }
-
-// void LogicalBoard::undoMove(board_state_str *last_state)
-// {
-// }
 /* fin Falta hacer */
+
+void LogicalBoard::undoMove(BoardState *last_state)
+{
+	if (last_state == nullptr)
+	{
+		last_state = this->_last_state;
+	}
+
+	if (last_state != nullptr)
+	{
+		/* TODO: revisar que no pierda memoria cuando
+		   sobreescribo al jugador con la pelota */
+		this->_team_A = last_state->getPlayers(A);
+		this->_team_B = last_state->getPlayers(B);
+
+		delete this->_free_ball;
+		this->_free_ball = nullptr;
+
+		if (last_state->getBall() != nullptr)
+		{
+			this->_free_ball = new Ball(*(last_state->getBall()));
+		}
+	}
+}
 
 std::string LogicalBoard::winner()
 {
@@ -160,9 +266,9 @@ void LogicalBoard::reset(const std::vector<std::pair<int, int>> &position_A,
 	this->_score[B] = 0;
 }
 
-bool LogicalBoard::positionInBoard(unsigned int i, unsigned int j)
+bool LogicalBoard::positionInBoard(std::pair<int, int> pos) const
 {
-	return i < this->_rows && j < this->_columns;
+	return pos.first < this->_rows && pos.second < this->_columns;
 }
 
 void LogicalBoard::startingPositions(const std::vector<std::pair<int, int>> &position_A, 
@@ -209,11 +315,10 @@ void LogicalBoard::startingPositions(const std::vector<std::pair<int, int>> &pos
 	}
 }
 
-/* Falta hacer */
-// void LogicalBoard::getState()
-// {
-// }
-/* fin Falta hacer */
+BoardState* LogicalBoard::getState() const
+{
+	return new BoardState(this->_team_A, this->_team_B, *(this->_free_ball));
+}
 
 const std::vector<std::pair<int, int>>& LogicalBoard::getGoal(std::string team) const
 {
@@ -245,6 +350,11 @@ std::vector<Player>& LogicalBoard::getTeam(std::string team)
 	}
 
 	return *players;
+}
+
+Ball* LogicalBoard::getBall()
+{
+	return this->_free_ball;
 }
 
 std::ostream& operator<<(std::ostream &os, const LogicalBoard &lb)

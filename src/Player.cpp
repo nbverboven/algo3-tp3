@@ -6,6 +6,18 @@ Player::Player(unsigned int player_id, float p_quite)
 	this->_old_position = std::make_pair(-1, -1);
 }
 
+Player::~Player()
+{
+	delete this->_ball;
+}
+
+Player::Player(const Player &p)
+	: _id(p._id), _p_quite(p._p_quite), _old_position(p._old_position), 
+	  _i(p._i), _j(p._j)
+{
+	this->_ball = new Ball(*(p._ball));
+}
+
 void Player::setPosition(int i, int j)
 {
 	this->_i = i;
@@ -64,7 +76,7 @@ float Player::probQuite() const
 	return this->_p_quite;
 }
 
-Ball* Player::getBall() const
+Ball* Player::getBall()
 {
 	return this->_ball;
 }

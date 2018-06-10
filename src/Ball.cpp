@@ -6,6 +6,10 @@ Ball::Ball()
 	this->_movement = std::make_pair(-1, -1);
 }
 
+Ball::Ball(const Ball &b)
+	: _movement(b._movement), _i(b._i), _j(b._j)
+{}
+
 void Ball::setMovement(std::pair<int, int> movement)
 {
 	this->_movement.first = movement.first;

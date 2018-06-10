@@ -13,9 +13,10 @@ class Ball
 public:
 
 	/**
-	 * Constructor
+	 * Constructores
 	 */
 	Ball();
+	Ball(const Ball &b);
 
 	/**
 	 * Indica el próximo movimiento a realizar.
@@ -52,6 +53,8 @@ public:
 	 * (fila, columna)
 	 */
 	std::pair<int, int> getPosition() const;
+
+	int getMovementDirection() const {return _movement.first;}
 
 
 	friend std::ostream &operator<<(std::ostream &os, const Ball &b);

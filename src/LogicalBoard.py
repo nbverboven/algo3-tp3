@@ -133,7 +133,7 @@ class LogicalBoard:
             elif p.ball is None:
                 valid = False # Quiere pasar la pelota pero no la tiene
         
-        # Dos jugadores del mismo equipo estan en la misma posicion
+        # Dos jugadores del mismo equipo no estan en la misma posicion
         valid = valid and len(set([(p.i, p.j) for p in team])) == len(team)
 
         # Todos los jugadores deben estar dentro de la cancha
