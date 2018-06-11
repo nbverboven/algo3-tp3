@@ -505,9 +505,3 @@ std::ostream& operator<<(std::ostream &os, const LogicalBoard &lb)
 
 	return os;
 }
-
-int main()
-{
-	/* code */
-	return 0;
-}
