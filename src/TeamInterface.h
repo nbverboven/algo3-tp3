@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "BoardState.h"
+#include "TeamMovements.h"
 
 #ifndef TEAM_INTERFACE_H
 #define TEAM_INTERFACE_H
@@ -30,15 +31,10 @@ public:
     virtual ~TeamInterface();
 
     /**
-     * Setea las posiciones iniciales de los jugadores.
-     */
-    virtual void starting_positions(std::vector<player_status>& positions)=0;
-
-    /**
      * Ejecuta el movimiento, depositando el movimiento a realizar
      * en el segundo parametro.
      */
-    virtual void make_move(BoardState* current_board, std::vector<player_move>& made_moves)=0;
+    virtual void make_move(BoardState* current_board, TeamMovements& made_moves)=0;
 
     /**
      * Finaliza la ejecucion del equipo (necesaria para poder usar el player_controller).
