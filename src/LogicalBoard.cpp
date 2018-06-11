@@ -183,11 +183,147 @@ bool LogicalBoard::intercepted(const Player &curr_state_player) const
 	return result;
 }
 
-/* Falta hacer */
-// void LogicalBoard::makeMove()
-// {
-// }
-/* fin Falta hacer */
+std::string LogicalBoard::makeMove(TeamMovements &moves_A, TeamMovements &moves_B)
+{
+	delete this->_last_state;
+	this->_last_state = getState();
+	maketeamMove(this->_team_A, moves_A);
+	maketeamMove(this->_team_B, moves_B);
+
+	// El balón se mueve en la dirección indicada por el último pase
+	if (this->_free_ball != nullptr)
+	{
+		// Ver que el pase es válido
+		std::pair<int, int> ball_final_position = (this->_free_ball)->finalPosition();
+		bool ball_in_board = positionInBoard(ball_final_position);
+		bool ball_in_goal_A = find(this->_goal_A.begin(), this->_goal_A.end(), ball_final_position) != this->_goal_A.end();
+		bool ball_in_goal_B = find(this->_goal_B.begin(), this->_goal_B.end(), ball_final_position) != this->_goal_B.end();
+		assert(ball_in_board || ball_in_goal_A || ball_in_goal_B);
+
+		// Mira si alguien interceptó la pelota
+		std::vector<Player*> intercepters;
+
+		for (Player &p : this->_team_A)
+		{
+			if (intercepted(p))
+			{
+				Player *p_ptr = &p;
+				intercepters.push_back(p_ptr);
+			}
+		}
+
+		for (Player &p : this->_team_B)
+		{
+			if (intercepted(p))
+			{
+				Player *p_ptr = &p;
+				intercepters.push_back(p_ptr);
+			}
+		}
+
+		assert(intercepters.size() < 3);
+
+		if (intercepters.size() == 1)
+		{
+			intercepters[0]->takeBall(*(this->_free_ball));
+			this->_free_ball = nullptr;
+		}
+		else if (intercepters.size() == 2)
+		{
+			fairFightBall(*(intercepters[0]), *(intercepters[1]));
+		}
+		else
+		{
+			this->_free_ball->move();
+			ball_in_goal_A = find(this->_goal_A.begin(), this->_goal_A.end(), (this->_free_ball)->getPosition()) != this->_goal_A.end();
+			ball_in_goal_B = find(this->_goal_B.begin(), this->_goal_B.end(), (this->_free_ball)->getPosition()) != this->_goal_B.end();
+			assert(positionInBoard((this->_free_ball)->getPosition()) || ball_in_goal_A || ball_in_goal_B);
+
+			/* Si hay jugadores en ese casillero, entonces hay que ver si es uno
+			   solo entonces agarra la pelota y si son dos se la disputan */
+			std::vector<Player*> players_to_fight;
+
+			for (Player &p : this->_team_A)
+			{
+				if (p.getPosition() == (this->_free_ball)->getPosition())
+				{
+					Player *p_ptr = &p;
+					players_to_fight.push_back(p_ptr);
+				}
+			}
+
+			for (Player &p : this->_team_B)
+			{
+				if (p.getPosition() == (this->_free_ball)->getPosition())
+				{
+					Player *p_ptr = &p;
+					players_to_fight.push_back(p_ptr);
+				}
+			}
+
+			if (players_to_fight.size() == 1)
+			{
+				players_to_fight[0]->takeBall(*(this->_free_ball));
+				this->_free_ball = nullptr;
+			}
+
+			if (players_to_fight.size() == 2)
+			{
+				fairFightBall(*(players_to_fight[0]), *(players_to_fight[1]));
+			}
+		}
+	}
+	else
+	{
+		/* Si dos jugadores estan en el mismo casillero y uno tiene la pelota
+		   Los mismos se disputan quien termina con la posesion. */
+
+		// El equipo A tiene la pelota
+		bool already_fight = false;
+
+		for (Player &p1 : this->_team_A)
+		{
+			if (already_fight) break;
+
+			if (p1.getBall() != nullptr)
+			{
+				for (Player &p2 : this->_team_B)
+				{
+					if (p1.getPosition() == p2.getPosition())
+					{
+						fightBall(p1, p2);
+						already_fight = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!already_fight)
+		{
+			// El equipo B tiene la pelota
+			for (Player &p1 : this->_team_B)
+			{
+				if (already_fight) break;
+
+				if (p1.getBall() != nullptr)
+				{
+					for (Player &p2 : this->_team_A)
+					{
+						if (p1.getPosition() == p2.getPosition())
+						{
+							fightBall(p1, p2);
+							already_fight = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return updateScore();
+}
 
 void LogicalBoard::undoMove(BoardState *last_state)
 {

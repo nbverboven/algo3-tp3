@@ -14,9 +14,16 @@ public:
 	  */
 	TeamMovements();
 
+	/**
+	 * Asigna el movimiento (type, value) al jugador indicado por parámetro
+	 */
 	void assignMovement(unsigned int player_id, std::string type, std::pair<int, int> value);
 
-	bool hasMovementAssigned(unsigned int player_id) {return _moves.count(player_id) > 0;}
+	/**
+	 * Devuelve true si el jugador indicado tiene asignado algún movimiento
+	 * y false en caso contrario
+	 */
+	bool hasMovementAssigned(unsigned int player_id);
 
 	/**
 	 * Devuelve el tipo de movimiento a realizar por el jugador de id 
@@ -29,8 +36,6 @@ public:
 	 * el jugador de id  player_id
 	 */
 	std::pair<int, int> getMovementValue(unsigned int player_id);
-
-	// unsigned int getNumberOfMovements() const {return _moves.size();}
 
 private:
 	struct move_str

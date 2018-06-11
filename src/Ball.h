@@ -2,8 +2,9 @@
 #define BALL_H
 
 #include <iostream>
-#include <vector>
 #include <utility>
+#include <vector>
+
 #include "Defines.h"
 
 extern const std::vector<std::pair<int,int>> MOVES;
@@ -32,7 +33,7 @@ public:
 
 	/**
 	 * Devuelve la posición en la que quedará la pelota
-	 * luego de realizar el movimiento
+	 * luego de finalizar su movimiento
 	 */
 	std::pair<int,int> finalPosition() const;
 
@@ -49,13 +50,14 @@ public:
 	void setPosition(int i, int j);
 
 	/**
-	 * Devuelve la posición de la pelota como un par
-	 * (fila, columna)
+	 * Devuelve la posición de la pelota como un par (fila, columna)
 	 */
 	std::pair<int, int> getPosition() const;
 
-	int getMovementDirection() const {return _movement.first;}
-
+	/**
+	 * Devuelve la dirección del movimiento que realiza la pelota
+	 */
+	int getMovementDirection() const;
 
 	friend std::ostream &operator<<(std::ostream &os, const Ball &b);
 

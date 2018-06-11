@@ -12,6 +12,11 @@ void TeamMovements::assignMovement(unsigned int player_id, std::string type, std
 	this->_moves[player_id] = new_move;
 }
 
+bool TeamMovements::hasMovementAssigned(unsigned int player_id) 
+{
+	return (this->_moves).count(player_id) > 0;
+}
+
 std::string TeamMovements::getMovementType(unsigned int player_id)
 {
 	return (this->_moves[player_id]).type;

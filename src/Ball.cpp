@@ -58,6 +58,11 @@ std::pair<int, int> Ball::getPosition() const
 	return std::make_pair(this->_i, this->_j);
 }
 
+int Ball::getMovementDirection() const 
+{
+	return this->_movement.first;
+}
+
 std::ostream &operator<<(std::ostream &os, const Ball &b)
 {
 	os << "(" << b._i << ", " << b._j;

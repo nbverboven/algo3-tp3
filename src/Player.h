@@ -1,8 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <memory>
 #include <iostream>
+#include <memory>
+
 #include "Ball.h"
 #include "Defines.h"
 
@@ -11,28 +12,30 @@ extern const std::vector<std::pair<int,int>> MOVES;
 class Player
 {
 public:
+
 	/**
 	 * Constructores
 	 */
 	Player(unsigned int player_id, float p_quite);
 	Player(const Player &p);
+
+	/**
+	 * Destructor
+	 */
 	~Player();
 
 	/**
-	 * Ubica la pelota en alguna posición de la cancha.
-	 * i indica la fila y j la columna
+	 * Ubica la pelota en alguna posición de la cancha. i indica la fila y j la columna
 	 */
 	void setPosition(int i, int j);
 
 	/**
-	 * Avanza en la dirección indicada por move.
-	 * Los valores están en el rango [0, 1,..., 8]
+	 * Avanza en la dirección indicada por move
 	 */
 	void move(int move);
 
 	/*
-	 * Avanza en la dirección opuesta a la indicada por move.
-	 * Los valores están en el rango [0, 1,..., 8]
+	 * Avanza en la dirección opuesta a la indicada por move
 	 */
 	void backwardMove(int move);
 
@@ -47,8 +50,7 @@ public:
 	void moveBall();
 
 	/**
-	 * Toma posesión de la pelota, i.e. la ubica en la posición
-	 * del jugador
+	 * Toma posesión de la pelota, i.e. la ubica en la posición del jugador
 	 */
 	void takeBall(Ball &ball);
 
@@ -68,13 +70,15 @@ public:
 	/**
 	 * Devuelve el id del jugador
 	 */
-	unsigned int getId() const {return _id;}
-
-	std::pair<int, int> getPosition() const {return std::make_pair(_i, _j);}
+	unsigned int getId() const;
 
 	/**
-	 * Devuelve un puntero a la pelota. Si el jugador no está 
-	 * en posesión de ella, devuelve nullptr
+	 * Devuelve la posición actual del jugador
+	 */
+	std::pair<int, int> getPosition() const;
+
+	/**
+	 * Devuelve un puntero a la pelota
 	 */
 	Ball* getBall();
 

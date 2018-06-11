@@ -76,10 +76,21 @@ float Player::probQuite() const
 	return this->_p_quite;
 }
 
+unsigned int Player::getId() const
+{
+	return this->_id;
+}
+
+std::pair<int, int> Player::getPosition() const
+{
+	return std::make_pair(this->_i, this->_j);
+}
+
 Ball* Player::getBall()
 {
 	return this->_ball;
 }
+
 
 std::ostream &operator<<(std::ostream &os, const Player &p)
 {
