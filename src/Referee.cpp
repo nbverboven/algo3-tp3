@@ -1,4 +1,5 @@
 #include "Referee.h"
+#include "TeamMovements.h"
 
 /**
  * Constructor.
@@ -38,11 +39,27 @@ std::string Referee::runPlay(std::string starting_team) {
     this->logicalBoard_.reset(positions_A, positions_B, starting_team);
 
     for (int i = 0; i < this->steps_; ++i) {
-        // TODO: completar la logica de: ejecutar las jugadas de ambos equipos
-        // en base al board_state del tablero y aplicar los dos conjuntos de
-        // jugadas realizadas en el tablero logico
+
+        BoardState* board_state_A = this->logicalBoard_.getState();
+        BoardState* board_state_B = this->logicalBoard_.getState();
+        TeamMovements moves_A;
+        TeamMovements moves_B;
+        this->team_A_.move(board_state_A, moves_A);
+        this->team_B_.move(board_state_B, moves_B);
+
+        // TODO: esta funcion makeMove del LogicalBoard todavia no esta hecha.
+        // aparentemente deberia devolver un 'indicador' de que la jugada termino
+        // en gol, para poder resetear a las posiciones iniciales a los jugadores
+        this->logicalBoard_.makeMove(moves_A, moves_B);
+
+        delete board_state_A;
+        delete board_state_B;
     }
 
+    std::string winner = this.logicalBoard_.winner();
+    this.team_A_.finish(winner);
+    this.team_A_.finish(winner);
+
     // devuelve el ganador
-    return this->logicalBoard_.winner();
+    return winner;
 }
