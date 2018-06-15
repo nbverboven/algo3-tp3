@@ -25,6 +25,6 @@ const std::map<std::string, std::string> SIDE = {{A, LEFT}, {B, RIGHT}};
 
 const std::vector<float> DEFAULT_QUITES = {0.5, 0.5, 0.5};
 const std::vector<float> DEFAULT_GENOME = {1.0, -1.0, 0.5, -0.5, 1.0, -0.8, 0.9, 0.95};
-const std::vector<std::pair<int,int>> MOVES = {{0, 0}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, 1}};
+const std::vector<std::pair<int,int>> MOVES = {{0, 0}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
 
 #endif // DEFINES_H
