@@ -22,7 +22,8 @@ public:
 	/**
 	 * Indica el próximo movimiento a realizar.
 	 * movement es un par (dirección, cantidad de pasos).
-	 * Observación: asume que los valores son no negativos
+	 * Observación: asume que los valores son no negativos y que
+	 * 0 <= dirección <= 8.
 	 */
 	void setMovement(std::pair<int, int> movement);
 
