@@ -22,7 +22,7 @@ void Ball::move()
 	if (this->_movement.second > -1)
 	{
 		std::pair<int, int> move = MOVES[this->_movement.first];
-		setPosition(this->_i + move.first, this->_j + move.second);
+		setPosition(this->_i + 2*move.first, this->_j + 2*move.second);
 		--this->_movement.second;
 	}
 }
@@ -42,7 +42,7 @@ void Ball::undoMove()
 	if (this->_movement.second > -1)
 	{
 		std::pair<int, int> move = MOVES[this->_movement.first];
-		setPosition(this->_i - move.first, this->_j - move.second);
+		setPosition(this->_i - 2*move.first, this->_j - 2*move.second);
 		++this->_movement.second;		
 	}
 }
