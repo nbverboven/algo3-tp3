@@ -72,11 +72,19 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-tests.o : $(USER_DIR)/tests.cpp $(GTEST_HEADERS)
+test-player.o : $(USER_DIR)/test-player.cpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -O3 -c $<
 
-algoritmos.o : ../src/algoritmos.cpp
+Player.o : ../../src/Player.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -O3 -c $<
 
-tests : tests.o algoritmos.o gtest_main.a
+# Por alguna razón, si se compila con optimizaciones, tira error
+# al intentar acceder a los vectores globales
+Ball.o : ../../src/Ball.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -O0 -c $<
+
+tests : test-player.o Ball.o Player.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -O3 -lpthread $^ -o $@
+
+run:
+	./tests
