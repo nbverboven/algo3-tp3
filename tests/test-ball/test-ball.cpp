@@ -165,6 +165,9 @@ TEST(TestBall, TestCopyConstructor)
 	b.setMovement(std::make_pair(2, 1));
 
 	Ball c(b);
+	EXPECT_EQ(c.getPosition(), b.getPosition());
+	EXPECT_EQ(c.getMovementDirection(), b.getMovementDirection());
+	EXPECT_EQ(c.finalPosition(), b.finalPosition());
 	c.setPosition(5, -10);
 	c.setMovement(std::make_pair(3, 1));
 
