@@ -17,8 +17,61 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &tea
 	}
 }
 
+void LogicalBoard::updateBoard(const board_status& board, const std::string& team)
+{
+	this->_ball = board.ball;
+
+	//El tablero no sabe si es el equipo A o B ..
+	std::vector<player_status> _team_old;
+	std::vector<player_status> _oponent_team_old;
+
+	if(team == A){
+		_team_old = this->_team_A; 
+		_oponent_team_old = this->_team_B; 
+	}else{
+		_oponent_team_old = this->_team_A; 
+		_team_old = this->_team_B;
+	}
+
+	std::vector<player_status> _team;
+	std::vector<player_status> _oponent_team;
+	
+	for (const player_status &p : board.team) {
+		//Lamentablemente tengo que actualizar las probabilidades porque no vienen en el board..
+		double _proba = 0;
+		for (const player_status &p2 : _team_old){
+			if(p.id == p2.id){
+				_proba = p2.probability; break;
+			}
+		}
+		player_status jg(p);
+		jg.probability = _proba;
+		_team.push_back(jg);
+	}
+
+	for (const player_status &p : board.oponent_team) {
+		//Acá tambien tengo que actualizar..
+		double _proba = 0;
+		for (const player_status &p2 : _oponent_team_old){
+			if(p.id == p2.id){
+				_proba = p2.probability; break;
+			}
+		}
+		player_status jg(p);
+		jg.probability = _proba;
+		_oponent_team.push_back(jg);
+	}
+	
+	if(team == A){
+
+	}else{
+
+	}
+
+}
+
 // Asumo que moves está indexado por el id de los jugadores de team
-void LogicalBoard::maketeamMove(std::vector<player_status> &team, std::vector<player_move> &moves)
+void LogicalBoard::makeTeamMove(std::vector<player_status> &team, std::vector<player_move> &moves)
 {
 	for (player_status &p : team)
 	{
@@ -133,8 +186,8 @@ bool LogicalBoard::intercepted(const player_status &curr_state_player, std::stri
 std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vector<player_move> &moves_B)
 {
 	this->_last_state = getState();
-	maketeamMove(this->_team_A, moves_A);
-	maketeamMove(this->_team_B, moves_B);
+	makeTeamMove(this->_team_A, moves_A);
+	makeTeamMove(this->_team_B, moves_B);
 
 	// El balón se mueve en la dirección indicada por el último pase
 	if ((this->_ball).is_free) {

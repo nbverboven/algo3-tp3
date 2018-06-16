@@ -20,15 +20,22 @@ class LogicalBoard
 {
 public:
 
+    LogicalBoard() = default;
+
 	/**
 	 * Constructor
 	 */
 	LogicalBoard(int columns, int rows, const std::vector<player> &team_A, const std::vector<player> &team_B);
 
 	/**
+	 * Modifica los equipos y la pelota a la nueva instancia
+	 */
+	void updateBoard(const board_status& board, const std::string& team);
+
+	/**
 	 * Realiza los movimientos de un equipo
 	 */
-	void maketeamMove(std::vector<player_status> &team, std::vector<player_move> &moves);
+	void makeTeamMove(std::vector<player_status> &team, std::vector<player_move> &moves);
 
 	/**
 	 * player_status_without_ball le disputa la posesión de la pelota a player_status_with_ball

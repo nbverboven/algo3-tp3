@@ -5,6 +5,7 @@
 #include "static_player.hpp"
 #include "board_status.hpp"
 #include "constants.hpp"
+#include "LogicalBoard.h"
 
 class GlottonusPlayer : public static_player {
 
@@ -40,7 +41,8 @@ public:
 protected:
 
     std::vector<player> players;
-    std::vector<player> oponents;    
+    std::vector<player> oponents;
+    LogicalBoard logicalBoard;
 
 };
 

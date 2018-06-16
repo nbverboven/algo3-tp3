@@ -101,6 +101,7 @@ public:
 			current_board.clear();
 			this->read_board_status(current_board);
 			this->team.make_move(current_board, moves);
+            this->log_file << "BoardPoints: " << this->team.EvaluateBoard(current_board) << std::endl;
 			this->send_move(moves);
 		}
 
