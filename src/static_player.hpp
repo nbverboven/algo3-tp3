@@ -11,6 +11,8 @@ std::mt19937 generator(rd());
 
 class static_player {
     
+protected: 
+
     int columns, rows, steps;
     std::string team, side;
 
