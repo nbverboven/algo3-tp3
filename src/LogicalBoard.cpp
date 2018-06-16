@@ -2,7 +2,10 @@
 
 LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &team_A, const std::vector<player> &team_B)
 	: _team_A_players(team_A), _team_B_players(team_B), _columns(columns), _rows(rows)
-{}
+{
+	this->_score[A] = 0;
+	this->_score[B] = 0;
+}
 
 // Asumo que moves está indexado por el id de los jugadores de team
 void LogicalBoard::maketeamMove(std::vector<player_status> &team, std::vector<player_move> &moves)
@@ -286,7 +289,6 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 	// assert(ball_in_board || ball_in_goal_A || ball_in_goal_B);
 
 	return updateScore();
-
 }
 
 void LogicalBoard::undoMove(board_status last_state)
@@ -308,7 +310,7 @@ std::string LogicalBoard::updateScore()
 	Ball *ball = this->_free_ball;
 	std::string res;
 
-	std::pair<int, int> position = this->_ball->getPosition();
+	std::pair<int, int> position = std::make_pair((this->_ball).i, (this->_ball).j);
 	if (std::find(this->_goal_A.begin(), this->_goal_A.end(), position) != this->_goal_A.end())
 	{
 		this->_score[B] += 1;
@@ -325,6 +327,58 @@ std::string LogicalBoard::updateScore()
 	}
 
 	return res;
+}
+
+void reset(const std::vector<std::pair<int, int>> &position_A, 
+           const std::vector<std::pair<int, int>> &position_B,
+           std::string starting)
+{
+	startingPositions(position_A, position_B, starting);
+	this->_score[A] = 0;
+	this->_score[B] = 0;
+}
+
+void startingPositions(const std::vector<std::pair<int, int>> &position_A, 
+                       const std::vector<std::pair<int, int>> &position_B,
+                       std::string starting)
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		// Si algún jugador tenía la pelota, se la saco
+		if ((this->_team_A[i]).in_possession)
+		{
+			(this->_team_A[i]).in_possession = false;
+		}
+
+		if ((this->_team_B[i]).in_possession)
+		{
+			(this->_team_B[i]).in_possession = false;
+		}
+
+		// Coloco a los jugadores en las posiciones correctas
+		this->_team_A[i].setPosition(position_A[i].first, position_A[i].second);
+		this->_team_B[i].setPosition(position_B[i].first, position_B[i].second);
+	}
+
+	(this->_ball).is_free = false;
+
+	// Muevo la pelota al centro de la cancha
+	(this->_ball).i = floor(this->_rows/2);
+	(this->_ball).j = (this->_columns/2) - 1;
+
+	// Le doy la pelota al jugador que saca y lo pongo en el centro
+	if (starting == A)
+	{
+		(this->_team_A[0]).in_possession = true;
+		(this->_team_A[0]).i = (this->_ball.i);
+		(this->_team_A[0]).j = (this->_ball.j);
+	}
+	else
+	{
+		(this->_team_B[0]).in_possession = true;
+		(this->_team_B[0]).i = (this->_ball.i);
+		(this->_team_B[0]).j = (this->_ball.j);
+	}
 }
 
 board_status LogicalBoard::getState() const
