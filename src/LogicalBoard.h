@@ -14,7 +14,7 @@
 #include "constants.hpp"
 #include "board_status.hpp"
 
-extern const std::vector<std::pair<int,int>> MOVES;
+extern const std::vector<move> MOVES;
 
 class LogicalBoard
 {
@@ -54,7 +54,7 @@ public:
 	/**
 	 * Deshace los últimos movimientos realizados
 	 */
-	void undoMove(board_status *last_state);
+	void undoMove(board_status last_state);
 
 	/**
 	 * Devuelve el nombre del ganador o "NINGUNO" en caso de empate
@@ -76,18 +76,18 @@ public:
 	           std::string starting);
 
 	/**
-	 * Devuelve true si el par (i, j) corresponde a una posición válida dentro del campo 
-	 * de juego y false en caso contraro
-	 */
-	// bool positionInBoard(std::pair<int, int> pos) const;
-
-	/**
 	 * Ubica a los jugadores en las posiciones iniciales y le da la pelota al equipo que empieza.
 	 * Asume que las posiciones son válidas
 	 */
 	void startingPositions(const std::vector<std::pair<int, int>> &position_A, 
 	                       const std::vector<std::pair<int, int>> &position_B,
 	                       std::string starting);
+
+	/**
+	 * Devuelve true si el par (i, j) corresponde a una posición válida dentro del campo 
+	 * de juego y false en caso contraro
+	 */
+	bool positionInBoard(int i, int j) const;
 
 	/**
 	 * Devuelve el estado actual del tablero

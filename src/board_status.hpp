@@ -1,6 +1,9 @@
 #ifndef BOARD_STATUS
 #define BOARD_STATUS
 
+#include <string>
+#include <vector>
+
 struct player {
 	int id;
 	double probability;
@@ -28,9 +31,13 @@ struct player_status {
 	double probability;
 	bool in_possession = false;
 
+	player_status() {}
 	player_status(int id) : id(id) {}
+	player_status(int id, double probability) : id(id), probability(probability) {}
 	player_status(int id, int i, int j, double probability, bool in_possession) 
-		: id(id), i(i), j(j), probability(probability) in_possession(in_possession) {}
+		: id(id), i(i), j(j), probability(probability), in_possession(in_possession) {}
+	player_status(const player_status &otro)
+		: id(otro.id), i(otro.i), j(otro.j), probability(otro.probability), in_possession(otro.in_possession) {}
 };
 
 struct ball_status {
