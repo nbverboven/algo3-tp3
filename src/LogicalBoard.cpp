@@ -63,9 +63,11 @@ void LogicalBoard::updateBoard(const board_status& board, const std::string& tea
 	}
 	
 	if(team == A){
-
+		this->_team_A = _team;
+		this->_team_B = _oponent_team;
 	}else{
-
+		this->_team_A = _oponent_team;
+		this->_team_B = _team;
 	}
 
 }
