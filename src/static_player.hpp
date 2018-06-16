@@ -10,9 +10,11 @@ std::random_device rd;
 std::mt19937 generator(rd());
 
 class static_player {
-	
-	int columns, rows, steps;
-	std::string team, side;
+    
+protected: 
+
+    int columns, rows, steps;
+    std::string team, side;
 
 public:
 

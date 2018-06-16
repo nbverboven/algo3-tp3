@@ -19,13 +19,10 @@ GlottonusPlayer::GlottonusPlayer(
     if(this->side == IZQUIERDA)
         this->team = A;
     else
-        this->team = B;
-        
+        this->team = B;       
 }
 
-
 GlottonusPlayer::~GlottonusPlayer(){}
-
 
 void GlottonusPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){
     made_moves.clear();

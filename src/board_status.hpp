@@ -46,6 +46,8 @@ struct player_status {
 	player_status() {}
 	player_status(int id) : id(id) {}
 	player_status(int id, double probability) : id(id), probability(probability) {}
+    player_status(int id, int i, int j, bool in_possession) 
+		: id(id), i(i), j(j), in_possession(in_possession) {}
 	player_status(int id, int i, int j, double probability, bool in_possession) 
 		: id(id), i(i), j(j), probability(probability), in_possession(in_possession) {}
 	player_status(const player_status &otro)
@@ -54,7 +56,7 @@ struct player_status {
     void move(player_move pm){
         if(pm.player_id == id){
             if(pm.move_type == PASE)
-                in_posetion = false;
+                in_possession = false;
 
             struct move m(moves[pm.dir]);
             i += m.i;
