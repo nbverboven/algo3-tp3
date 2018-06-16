@@ -123,8 +123,8 @@ bool LogicalBoard::intercepted(player_status curr_state_player, std::string team
 std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vector<player_move> &moves_B)
 {
 	this->_last_state = getState();
-	maketeamMove(this->_team_A_player_status, moves_A);
-	maketeamMove(this->_team_B_player_status, moves_B);
+	maketeamMove(this->_team_A, moves_A);
+	maketeamMove(this->_team_B, moves_B);
 
 	// El balón se mueve en la dirección indicada por el último pase
 	if ((this->_ball).is_free) {
@@ -147,8 +147,8 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 		assert(intercepters.size() < 3);
 
 		if (intercepters.size() == 1) {
-			if (intercepters[0].second == A) this->_team_A_player_status[intercepters[0].first.id].in_possession = true;
-			if (intercepters[0].second == B) this->_team_B_player_status[intercepters[0].first.id].in_possession = true;
+			if (intercepters[0].second == A) this->_team_A[intercepters[0].first.id].in_possession = true;
+			if (intercepters[0].second == B) this->_team_B[intercepters[0].first.id].in_possession = true;
 			(this->_ball).is_free = false;
 		}
 		else if (intercepters.size() == 2) {
@@ -156,17 +156,17 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 			player_status *p2 = nullptr;
 
 			if (intercepters[0].second == A){
-				p1 = &(this->_team_A_player_status[intercepters[0].first.id]);
+				p1 = &(this->_team_A[intercepters[0].first.id]);
 			}
 			else {
-				p1 = &(this->_team_B_player_status[intercepters[0].first.id]);
+				p1 = &(this->_team_B[intercepters[0].first.id]);
 			}
 
 			if (intercepters[1].second == A){
-				p2 = &(this->_team_A_player_status[intercepters[1].first.id]);
+				p2 = &(this->_team_A[intercepters[1].first.id]);
 			}
 			else {
-				p2 = &(this->_team_B_player_status[intercepters[1].first.id]);
+				p2 = &(this->_team_B[intercepters[1].first.id]);
 			}
 
 			fairFightBall(*p1, *p2);
@@ -199,10 +199,10 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 					player_status *p1 = nullptr;
 
 					if (players_to_fight[0].second == A){
-						p1 = &(this->_team_A_player_status[players_to_fight[0].first.id]);
+						p1 = &(this->_team_A[players_to_fight[0].first.id]);
 					}
 					else {
-						p1 = &(this->_team_B_player_status[players_to_fight[0].first.id]);
+						p1 = &(this->_team_B[players_to_fight[0].first.id]);
 					}
 
 					p->in_possession = true;
@@ -215,17 +215,17 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 					player_status *p2 = nullptr;
 
 					if (players_to_fight[0].second == A){
-						p1 = &(this->_team_A_player_status[players_to_fight[0].first.id]);
+						p1 = &(this->_team_A[players_to_fight[0].first.id]);
 					}
 					else {
-						p1 = &(this->_team_B_player_status[players_to_fight[0].first.id]);
+						p1 = &(this->_team_B[players_to_fight[0].first.id]);
 					}
 
 					if (players_to_fight[1].second == A){
-						p2 = &(this->_team_A_player_status[players_to_fight[1].first.id]);
+						p2 = &(this->_team_A[players_to_fight[1].first.id]);
 					}
 					else {
-						p2 = &(this->_team_B_player_status[players_to_fight[1].first.id]);
+						p2 = &(this->_team_B[players_to_fight[1].first.id]);
 					}
 
 					fairFightBall(*p1, *p2);
@@ -293,8 +293,8 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 
 void LogicalBoard::undoMove(board_status last_state)
 {
-	this->_team_A_player_status = (this->_last_state).team;
-	this->_team_B_player_status = (this->_last_state).oponent_team;
+	this->_team_A = (this->_last_state).team;
+	this->_team_B = (this->_last_state).oponent_team;
 	this->_ball = (this->_last_state).ball;
 }
 
@@ -384,8 +384,8 @@ void startingPositions(const std::vector<std::pair<int, int>> &position_A,
 board_status LogicalBoard::getState() const
 {
 	board_status curr_state;
-	curr_state.team = this->_team_A_player_status;
-	curr_state.oponent_team = this->_team_B_player_status;
+	curr_state.team = this->_team_A;
+	curr_state.oponent_team = this->_team_B;
 	curr_state.ball = this->_ball;
 
 	return board_status;

@@ -116,11 +116,8 @@ private:
 	std::map<std::string, unsigned int> _score;
 
 	/** Equipos */
-	std::vector<player_status> _team_A_player_status;
-	std::vector<player_status> _team_B_player_status;
-
-	std::vector<player> _team_A_players;
-	std::vector<player> _team_B_players;
+	std::vector<player_status> _team_A;
+	std::vector<player_status> _team_B;
 
 	/** Dimensiones del campo de juego */
 	int _columns;

@@ -25,10 +25,12 @@ struct player_status {
 	int id;
 	int i;
 	int j;
+	double probability;
 	bool in_possession = false;
 
 	player_status(int id) : id(id) {}
-	player_status(int id, int i, int j, bool in_possession) : id(id), i(i), j(j), in_possession(in_possession) {}
+	player_status(int id, int i, int j, double probability, bool in_possession) 
+		: id(id), i(i), j(j), probability(probability) in_possession(in_possession) {}
 };
 
 struct ball_status {
