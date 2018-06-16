@@ -62,6 +62,8 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
             test_board.team.push_back(p);
         }
 
+        //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard!
+
         newBoardPoints = this->EvaluateBoard(test_board);
     }
 
