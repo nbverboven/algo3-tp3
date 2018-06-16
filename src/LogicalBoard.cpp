@@ -23,7 +23,7 @@ void LogicalBoard::maketeamMove(std::vector<player_status> &team, std::vector<pl
 			}
 		}
 
-		/* Si el jugador pasó la pelota se setea la dirección y fuerza y se pierde 
+		/* Si el jugador pasó la pelota se setea la dirección y fuerza y se pierde
 		   la posesión, luego el tablero detecta la pelota libre y la mueve en cada paso */
 		if (movim.move_type == PASE)
 		{
@@ -47,7 +47,7 @@ void LogicalBoard::fightBall(player_status &player_with_ball, player_status &pla
 	p_take_ball = p_take_ball / (p_take_ball + p_defend_ball);
 
 	/* Genero un número al azar entre 0 y 1 de una distribucíón
-       uniforme 
+       uniforme
        Nota: puede que sea mejor poner esto en otro lado para
        no tener que crear el generador, inicializarlo, etc.
        cada vez que quiero disputar la pelota */
@@ -68,7 +68,7 @@ void LogicalBoard::fairFightBall(player_status &p1, player_status &p2)
 	float p_p2 = p2.probability / (p1.probability + p2.probability);
 
 	/* Genero un número al azar entre 0 y 1 de una distribucíón
-       uniforme 
+       uniforme
        Nota: ver nota en función fightBall */
 	std::mt19937 rnd_generator;
 	rnd_generator.seed(std::random_device()());
@@ -169,7 +169,7 @@ std::string LogicalBoard::makeMove(std::vector<player_move> &moves_A, std::vecto
 			fairFightBall(*p1, *p2);
 		}
 		else {
-			(this->_ball).move();
+			(this->_ball).move(MOVES[(this->_ball).dir]);
 
 			// ball_in_goal_A = find(this->_goal_A.begin(), this->_goal_A.end(), (this->_free_ball)->getPosition()) != this->_goal_A.end();
 			// ball_in_goal_B = find(this->_goal_B.begin(), this->_goal_B.end(), (this->_free_ball)->getPosition()) != this->_goal_B.end();
