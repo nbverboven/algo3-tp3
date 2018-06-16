@@ -1,2 +1,6 @@
 *.o
 *.pyc
+src/log/*
+.DS_Store
+.vscode
+src/static_player
