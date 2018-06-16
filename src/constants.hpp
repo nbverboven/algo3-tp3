@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "board_status.hpp"
 
 const std::string A = "A";
 const std::string B = "B";
