@@ -25,10 +25,11 @@ struct player_status {
 	int id;
 	int i;
 	int j;
-	bool in_posetion = false;
+	double probability;
+	bool in_possession = false;
 
 	player_status(int id) : id(id) {}
-	player_status(int id, int i, int j, bool in_posetion) : id(id), i(i), j(j), in_posetion(in_posetion) {}
+	player_status(int id, int i, int j, double probability, bool in_possession) : id(id), i(i), j(j), probability(probability) in_possession(in_possession) {}
 };
 
 struct ball_status {
@@ -37,6 +38,14 @@ struct ball_status {
 	int dir;
 	int steps;
 	bool is_free = false;
+
+	void move() {
+		if (is_free && steps > 0) {
+			i += 2*(MOVES[dir].first);
+			j += 2*(MOVES[dir].second);
+			--steps;
+		}
+	}
 };
 
 struct player_move {
