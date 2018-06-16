@@ -25,11 +25,10 @@ struct player_status {
 	int id;
 	int i;
 	int j;
-	double probability;
 	bool in_possession = false;
 
 	player_status(int id) : id(id) {}
-	player_status(int id, int i, int j, double probability, bool in_possession) : id(id), i(i), j(j), probability(probability) in_possession(in_possession) {}
+	player_status(int id, int i, int j, bool in_possession) : id(id), i(i), j(j), in_possession(in_possession) {}
 };
 
 struct ball_status {
@@ -39,10 +38,10 @@ struct ball_status {
 	int steps;
 	bool is_free = false;
 
-	void move() {
+	void move(move& m) {
 		if (is_free && steps > 0) {
-			i += 2*(MOVES[dir].first);
-			j += 2*(MOVES[dir].second);
+			i += 2*(m.i);
+			j += 2*(m.j);
 			--steps;
 		}
 	}
@@ -54,7 +53,7 @@ struct player_move {
 	int dir;
 	// Solo sirve para cuando el tipo de movimiento es un pase e indica cuanta
 	// fuerza tiene el pase (i.e. cuan lejos llegará el balón si nadie lo intercepta)
-	int steps; 
+	int steps;
 };
 
 struct board_status {
