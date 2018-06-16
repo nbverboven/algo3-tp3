@@ -17,9 +17,9 @@ GlottonusPlayer::GlottonusPlayer(
     this->side = side;
 
     if(this->side == IZQUIERDA)
-        this->team = 'A';
+        this->team = A;
     else
-        this->team = 'B';
+        this->team = B;
         
 }
 
