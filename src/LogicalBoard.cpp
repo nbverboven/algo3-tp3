@@ -15,6 +15,15 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &tea
 	{
 		(this->_team_B).push_back(player_status(p.id, p.probability));
 	}
+	// inicializa las posiciones de los arcos
+	std::vector<int> goalRows(3);
+	for (int i = 0; i < 3; ++i) {
+		goalRows[i] = (int) (floor(this->_rows / 2)) - 1 + i;
+	}
+	for (int i = 0; i < 3; ++i) {
+		this->_goal_A.push_back(std::make_pair(goalRows[i], -1));
+		this->_goal_B.push_back(std::make_pair(goalRows[i], this->_columns));
+	}
 }
 
 void LogicalBoard::updateBoard(const board_status& board, const std::string& team)
@@ -26,16 +35,16 @@ void LogicalBoard::updateBoard(const board_status& board, const std::string& tea
 	std::vector<player_status> _oponent_team_old;
 
 	if(team == A){
-		_team_old = this->_team_A; 
-		_oponent_team_old = this->_team_B; 
+		_team_old = this->_team_A;
+		_oponent_team_old = this->_team_B;
 	}else{
-		_oponent_team_old = this->_team_A; 
+		_oponent_team_old = this->_team_A;
 		_team_old = this->_team_B;
 	}
 
 	std::vector<player_status> _team;
 	std::vector<player_status> _oponent_team;
-	
+
 	for (const player_status &p : board.team) {
 		//Lamentablemente tengo que actualizar las probabilidades porque no vienen en el board..
 		double _proba = 0;
@@ -61,7 +70,7 @@ void LogicalBoard::updateBoard(const board_status& board, const std::string& tea
 		jg.probability = _proba;
 		_oponent_team.push_back(jg);
 	}
-	
+
 	if(team == A){
 		this->_team_A = _team;
 		this->_team_B = _oponent_team;
@@ -383,7 +392,7 @@ std::string LogicalBoard::updateScore()
 	return res;
 }
 
-void LogicalBoard::reset(const std::vector<std::pair<int, int>> &position_A, 
+void LogicalBoard::reset(const std::vector<std::pair<int, int>> &position_A,
            const std::vector<std::pair<int, int>> &position_B,
            std::string starting)
 {
@@ -392,7 +401,7 @@ void LogicalBoard::reset(const std::vector<std::pair<int, int>> &position_A,
 	this->_score[B] = 0;
 }
 
-void LogicalBoard::startingPositions(const std::vector<std::pair<int, int>> &position_A, 
+void LogicalBoard::startingPositions(const std::vector<std::pair<int, int>> &position_A,
                        const std::vector<std::pair<int, int>> &position_B,
                        std::string starting)
 {
@@ -470,7 +479,6 @@ ball_status LogicalBoard::getBall()
 {
 	return this->_ball;
 }
-
 
 bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves){
 	bool ret = true;
