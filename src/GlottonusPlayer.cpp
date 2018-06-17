@@ -68,25 +68,25 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
             new_move.dir =  uid(generator); // use rng as a generator  ; //4;
             made_moves.push_back(new_move);
 
-            player_status jg(p);
-            jg.move(new_move);
+            if(this->logicalBoard.isValidTeamMove(test_board.team, made_moves)){
+                player_status jg(p);
+                jg.move(new_move);
 
-            //Si el jugador tenia la pelota, la muevo con él
-            if(p.in_possession){
-                if(new_move.move_type == PASE){
-                    test_board.ball.move(MOVES[new_move.dir]);
-                }else{
-                    test_board.ball.i = jg.i; 
-                    test_board.ball.j = jg.j; 
+                //Si el jugador tenia la pelota, la muevo con él
+                if(p.in_possession){
+                    if(new_move.move_type == PASE){
+                        test_board.ball.move(MOVES[new_move.dir]);
+                    }else{
+                        test_board.ball.i = jg.i; 
+                        test_board.ball.j = jg.j; 
+                    }
                 }
+                
+                test_board.team.push_back(jg);
             }
-            
-            test_board.team.push_back(jg);
         }
 
         //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard
-        bool isValidTeamMove = this->logicalBoard.isValidTeamMove(test_board.team, made_moves);
-
         if(this->team == A)
             this->logicalBoard.makeMove(made_moves, oponent_moves);
         else

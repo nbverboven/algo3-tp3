@@ -483,9 +483,53 @@ ball_status LogicalBoard::getBall()
 bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves){
 	bool ret = true;
 
+	std::vector<player_status> players;
+	std::vector<player_move> player_moves;
+	ball_status ball;
+	//Exactamente un movimiento por jugador del equipo
+	//Lo transformo a un vector asociativo
 	for (const player_status &p : team){
+		for (const player_move &m : moves){
+			if(p.id == m.player_id)
+				player_moves[p.id] = m;
+		}
+	}
 
+	ret = ret && moves.size() == player_moves.size();	//son los mismos (nadie se movio 2 veces)
+	ret = ret && team.size() == player_moves.size();	//un movimiento por jugador
 
+	if(ret){
+		for (player_status p : team){
+			player_move m = player_moves[p.id];
+
+			if(m.move_type == MOVIMIENTO){
+				p.move(m);
+			}else if(!p.in_possession){
+				ret = false; //Quiere pasar la pelota pero no la tiene
+			}else{
+				// Mirar que el pase es válido: O sea que termina adentro de la cancha, en algún 
+				// arco o cruza un arco (ya que va de a dos pasos por vez).
+				// Además, no puede ser más largo que M / 2
+				
+				//TODO mover la pelota cambiando la variable 'ball'
+
+			}
+
+			players.push_back(p);
+		}
+
+		// Dos jugadores del mismo equipo estan en la misma posicion
+		//valid = valid and len(set([(p.i, p.j) for p in team])) == len(team)
+
+		// Todos los jugadores deben estar dentro de la cancha
+		for (player_status &p : players){
+			// Tambien puede estar en un arco si es un jugador con pelota
+			if(p.in_possession && !ball.is_free){
+				//TODO fijarese si esta dentro de un arco
+			}
+
+			ret = ret && this->positionInBoard(p.i, p.j);
+		}
 	}
 
 	return ret;
