@@ -49,6 +49,8 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
     for(int i=0; i<LIMITE_TESTEO_TABLEROS || newBoardPoints < currentBoardPoints; i++){
         made_moves.clear();
 
+        test_board.ball = current_board.ball;
+
         //Realizo mis movimientos
         for (auto& p : current_board.team) {
             new_move.player_id = p.id;
@@ -59,6 +61,17 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
             player_status jg(p.id);
             jg = p;
             jg.move(new_move);
+
+            //Si el jugador tenia la pelota, la muevo con él
+            if(p.in_possession){
+                if(new_move.move_type == PASE){
+                    test_board.ball.move(MOVES[new_move.dir]);
+                }else{
+                    test_board.ball.i = jg.i; 
+                    test_board.ball.j = jg.j; 
+                }
+            }
+
             test_board.team.push_back(p);
         }
 

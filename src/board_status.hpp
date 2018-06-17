@@ -53,7 +53,7 @@ struct player_status {
 	player_status(const player_status &otro)
 		: id(otro.id), i(otro.i), j(otro.j), probability(otro.probability), in_possession(otro.in_possession) {}
 
-	void move(player_move pm){
+	void move(const player_move& pm){
 		if(pm.player_id == id){
 			if(pm.move_type == PASE)
 				in_possession = false;
@@ -72,7 +72,7 @@ struct ball_status {
 	int steps;
 	bool is_free = false;
 
-	void move(move& m) {
+	void move(const move& m) {
 		if (is_free && steps > 0) {
 			i += 2*(m.i);
 			j += 2*(m.j);
