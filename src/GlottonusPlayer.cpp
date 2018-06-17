@@ -28,6 +28,12 @@ GlottonusPlayer::GlottonusPlayer(
 
 GlottonusPlayer::~GlottonusPlayer(){}
 
+std::random_device rd;
+std::mt19937 generator(rd());
+static std::uniform_int_distribution<int> uid(1,9); // random dice
+
+
+
 void GlottonusPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){   
     //Update del tablero lógico con los movimientos del contrario
     this->logicalBoard.updateBoard(current_board, this->team);
@@ -36,13 +42,17 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
     //También mi función de evaluar tablero, para saber si me sirve el movimiento
     //Voy a evaluar el tablero actual y ver si el movimiento que hago me da mejor resultado
 
+    //Tablero
     board_status test_board = current_board;
     int currentBoardPoints = this->EvaluateBoard(test_board);
-    test_board.team.clear();
     int newBoardPoints = 0;
-
-    made_moves.clear();
+    //Movimientos
+    std::vector<player_move> oponent_moves;
+    this->setOponentMoves(test_board, oponent_moves);
     player_move new_move;
+    //Inicializo
+    test_board.team.clear();
+    made_moves.clear();
 
     int LIMITE_TESTEO_TABLEROS = 1;
 
@@ -55,11 +65,10 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
         for (auto& p : current_board.team) {
             new_move.player_id = p.id;
             new_move.move_type = MOVIMIENTO;
-            new_move.dir = 4;
+            new_move.dir =  uid(generator); // use rng as a generator  ; //4;
             made_moves.push_back(new_move);
 
-            player_status jg(p.id);
-            jg = p;
+            player_status jg(p);
             jg.move(new_move);
 
             //Si el jugador tenia la pelota, la muevo con él
@@ -71,18 +80,43 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
                     test_board.ball.j = jg.j; 
                 }
             }
-
-            test_board.team.push_back(p);
+            
+            test_board.team.push_back(jg);
         }
+        
 
         //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard
+        if(this->team == A)
+            this->logicalBoard.makeMove(made_moves, oponent_moves);
+        else
+            this->logicalBoard.makeMove(oponent_moves, made_moves);
+        //TODO: ver en que casos desacemos el movimiento.
 
-        newBoardPoints = this->EvaluateBoard(test_board);
+        //if(isValidMove){
+            newBoardPoints = this->EvaluateBoard(test_board);
+        //}
     }
 
 }
 
+/**
+ * Setea los movimientos del oponente. 
+ * Por ahora, no se mueven.
+ */
+void GlottonusPlayer::setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves){
+    oponent_moves.clear();
+    player_move new_move;
+    for (auto& p : current_board.oponent_team) {
+        new_move.player_id = p.id;
+        new_move.move_type = MOVIMIENTO;
+        new_move.dir = 0;
+        oponent_moves.push_back(new_move);
+    }
+}
 
+/**
+ * Calcula la distancia entre dos puntos
+ */
 int distance(const std::tuple<int,int>& t1, const std::tuple<int,int>& t2){
     int x = (std::get<0>(t2) - std::get<0>(t1))^2;
     int y = (std::get<1>(t2) - std::get<1>(t1))^2;
