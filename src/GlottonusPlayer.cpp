@@ -82,7 +82,7 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
                 }
             }
             
-            test_board.team.push_back(p);
+            test_board.team.push_back(jg);
         }
         
 
