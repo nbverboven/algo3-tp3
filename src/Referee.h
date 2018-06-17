@@ -13,7 +13,6 @@ public:
      * Constructor.
      */
     Referee(int columns, int rows, int steps,
-        // esto esta mal: team_A y team_B son EQUIPOS, no arrays de players (son cosas distintas)
         static_player& team_A, static_player &team_B
     );
 
