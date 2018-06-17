@@ -470,3 +470,15 @@ ball_status LogicalBoard::getBall()
 {
 	return this->_ball;
 }
+
+
+bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves){
+	bool ret = true;
+
+	for (const player_status &p : team){
+
+
+	}
+
+	return ret;
+}

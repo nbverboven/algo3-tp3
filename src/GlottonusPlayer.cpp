@@ -83,16 +83,17 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
             
             test_board.team.push_back(jg);
         }
-        
 
         //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard
+        bool isValidTeamMove = this->logicalBoard.isValidTeamMove(test_board.team, made_moves);
+
         if(this->team == A)
             this->logicalBoard.makeMove(made_moves, oponent_moves);
         else
             this->logicalBoard.makeMove(oponent_moves, made_moves);
         //TODO: ver en que casos desacemos el movimiento.
 
-        //if(isValidMove){
+        //if(isValidTeamMove){
             newBoardPoints = this->EvaluateBoard(test_board);
         //}
     }

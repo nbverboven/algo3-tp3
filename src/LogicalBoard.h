@@ -116,6 +116,11 @@ public:
 	 */
 	ball_status getBall();
 
+	/**
+	 * Devuelve true si los movimientos del equipo son válidos
+	 */
+	bool isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves);
+
 	friend std::ostream& operator<<(std::ostream &os, const LogicalBoard &lb);
 
 private:
