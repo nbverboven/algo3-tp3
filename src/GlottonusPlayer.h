@@ -33,7 +33,7 @@ public:
     /**
      * Modifica la lista pasada como parámetro con los movimientos de los juegadores
      */
-    void make_move(const board_status& current_board, std::vector<player_move>& made_moves);
+    virtual void make_move(const board_status& current_board, std::vector<player_move>& made_moves);
 
     /**
      * Evalua el tablero asignandole un puntaje.

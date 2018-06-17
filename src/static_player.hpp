@@ -50,7 +50,7 @@ public:
 		}
 	}
 
-	void make_move(const board_status& current_board, std::vector<player_move>& made_moves) {
+	virtual void make_move(const board_status& current_board, std::vector<player_move>& made_moves) {
 		made_moves.clear();
 		player_move new_move;
 
