@@ -523,12 +523,17 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 
 		// Todos los jugadores deben estar dentro de la cancha
 		for (player_status &p : players){
+			bool inGoalPosition = false;
 			// Tambien puede estar en un arco si es un jugador con pelota
 			if(p.in_possession && !ball.is_free){
-				//TODO fijarese si esta dentro de un arco
+				std::pair<int, int> poss(p.i,p.j);
+				for(std::pair<int, int> t : this->_goal_A)
+					inGoalPosition = inGoalPosition || poss==t;
+				for(std::pair<int, int> t : this->_goal_A)
+					inGoalPosition = inGoalPosition || poss==t;
 			}
 
-			ret = ret && this->positionInBoard(p.i, p.j);
+			ret = ret && (inGoalPosition || this->positionInBoard(p.i, p.j));
 		}
 	}
 
