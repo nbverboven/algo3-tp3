@@ -63,4 +63,12 @@ public:
 	}
 
 	void finish(std::string result) { }
+
+	std::vector<player> getPlayers() {
+		return this->players;
+	}
+
+	std::vector<player> getOponentPlayers() {
+		return this->oponent_players;
+	}
 };
