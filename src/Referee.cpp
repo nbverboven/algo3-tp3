@@ -36,7 +36,7 @@ std::string Referee::runPlay(std::string startingTeam) {
         board_status boardStateB = this->logicalBoard_.getState();
         std::vector<player_move> movesA, movesB;
         this->team_A_.make_move(boardStateA, movesA);
-        this->team_A_.make_move(boardStateB, movesB);
+        this->team_B_.make_move(boardStateB, movesB);
 
         // ejecuta las jugadas de los dos equipos
         std::string starter = this->logicalBoard_.makeMove(movesA, movesB);
