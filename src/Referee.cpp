@@ -47,14 +47,12 @@ std::string Referee::runPlay(std::string startingTeam) {
             this->logicalBoard_.startingPositions(positionsA, positionsB, starter);
         }
 
-        // devuelve el equipo ganador
-        std::string winner = this->logicalBoard_.winner();
-        this->team_A_.finish(winner);
-        this->team_B_.finish(winner);
-        return winner;
     }
-
-    return "";
+    // devuelve el equipo ganador
+    std::string winner = this->logicalBoard_.winner();
+    this->team_A_.finish(winner);
+    this->team_B_.finish(winner);
+    return winner;
 }
 
 /**
