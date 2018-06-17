@@ -10,11 +10,13 @@ std::random_device rd;
 std::mt19937 generator(rd());
 
 class static_player {
-    
-protected: 
+
+protected:
 
     int columns, rows, steps;
     std::string team, side;
+    std::vector<player> players;
+    std::vector<player> oponent_players;
 
 public:
 
@@ -33,6 +35,8 @@ public:
 		this->steps = steps;
 		this->side = side;
 		this->team = team;
+		this->players = players;
+		this->oponent_players = oponent_players;
 	}
 
 	void starting_positions(std::vector<player_status>& positions) {
