@@ -20,7 +20,7 @@ class LogicalBoard
 {
 public:
 
-    LogicalBoard() = default;
+	LogicalBoard() = default;
 
 	/**
 	 * Constructor
@@ -79,16 +79,16 @@ public:
 	 * Reinicia el estado del tablero tablero
 	 */
 	void reset(const std::vector<std::pair<int, int>> &position_A, 
-	           const std::vector<std::pair<int, int>> &position_B,
-	           std::string starting);
+			   const std::vector<std::pair<int, int>> &position_B,
+			   std::string starting);
 
 	/**
 	 * Ubica a los jugadores en las posiciones iniciales y le da la pelota al equipo que empieza.
 	 * Asume que las posiciones son válidas
 	 */
 	void startingPositions(const std::vector<std::pair<int, int>> &position_A, 
-	                       const std::vector<std::pair<int, int>> &position_B,
-	                       std::string starting);
+						   const std::vector<std::pair<int, int>> &position_B,
+						   std::string starting);
 
 	/**
 	 * Devuelve true si el par (i, j) corresponde a una posición válida dentro del campo 
