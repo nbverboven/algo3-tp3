@@ -35,10 +35,18 @@ public:
      */
     void make_move(const board_status& current_board, std::vector<player_move>& made_moves);
 
-
+    /**
+     * Evalua el tablero asignandole un puntaje.
+     * Mientras mas bajo el puntaje del tablero, mejor.
+     */
     int EvaluateBoard(const board_status& current_board);
 
 protected:
+
+    /**
+     * Setea los movimientos del oponente
+     */
+    void setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves);
 
     std::vector<player> players;
     std::vector<player> oponents;
