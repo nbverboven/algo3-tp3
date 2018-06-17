@@ -68,8 +68,7 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
             new_move.dir =  uid(generator); // use rng as a generator  ; //4;
             made_moves.push_back(new_move);
 
-            player_status jg(p.id);
-            jg = p;
+            player_status jg(p);
             jg.move(new_move);
 
             //Si el jugador tenia la pelota, la muevo con él
