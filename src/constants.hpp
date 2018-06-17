@@ -20,4 +20,19 @@ const std::string LOSE = "PERDISTE";
 const std::string WIN = "GANASTE";
 const std::string TIE = "EMPATARON";
 
+/**
+ * Variables de puntaje para evaluar tableros
+ */
+namespace POINTS {
+    //Recordar que mientras menos puntos, mejor
+
+    const int BALL_POSSESSION = 0;
+    const int BALL_OPONENT_POSSESSION = 10;
+    const int BALL_FREE = 5;
+
+    const int GOAL_DISTANCE = 1;
+    const int BALL_DISTANCE = 2;
+    const int OPONENT_wBALL_DISTANCE = 3;
+}
+
 #endif //CONSTANTS

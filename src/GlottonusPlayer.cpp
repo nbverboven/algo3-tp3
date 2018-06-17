@@ -46,8 +46,10 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
 
     int LIMITE_TESTEO_TABLEROS = 1;
 
-    for(int i=0; i<LIMITE_TESTEO_TABLEROS || newBoardPoints > currentBoardPoints; i++){
+    for(int i=0; i<LIMITE_TESTEO_TABLEROS || newBoardPoints < currentBoardPoints; i++){
         made_moves.clear();
+
+        test_board.ball = current_board.ball;
 
         //Realizo mis movimientos
         for (auto& p : current_board.team) {
@@ -59,10 +61,21 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
             player_status jg(p.id);
             jg = p;
             jg.move(new_move);
+
+            //Si el jugador tenia la pelota, la muevo con él
+            if(p.in_possession){
+                if(new_move.move_type == PASE){
+                    test_board.ball.move(MOVES[new_move.dir]);
+                }else{
+                    test_board.ball.i = jg.i; 
+                    test_board.ball.j = jg.j; 
+                }
+            }
+
             test_board.team.push_back(p);
         }
 
-        //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard!
+        //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard
 
         newBoardPoints = this->EvaluateBoard(test_board);
     }
@@ -70,25 +83,68 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
 }
 
 
-int distance(const std::tuple<int,int> t1, const std::tuple<int,int> t2){
+int distance(const std::tuple<int,int>& t1, const std::tuple<int,int>& t2){
     int x = (std::get<0>(t2) - std::get<0>(t1))^2;
     int y = (std::get<1>(t2) - std::get<1>(t1))^2;
     int distance = sqrt(x - y);
     return distance;
 }
 
+/**
+ * Evalua el estado del tablero, mientras menos puntos tenga mejor,
+ * ( Ej: Si el jugador tiene la pelota y se esta acercando al arco
+ * va a tener menos puntos cuando mas se acerque )
+ */
 int GlottonusPlayer::EvaluateBoard(const board_status& board){
     int boardPoints = 0;
 
+    int dist,points;
     bool inPossession = false;
+    std::tuple<int,int> ballPoss(board.ball.i, board.ball.j);
+    std::vector<std::pair<int, int>>  goalPoss = this->logicalBoard.getGoal(this->team);
 
-    for (auto& p : board.team) {
-        
+    std::string opTeam = (this->team==A)?B:A;
+    std::vector<std::pair<int, int>>  oponentGoalPoss = this->logicalBoard.getGoal(opTeam);
+
+    //Evaluo mi equipo
+    for (const player_status& p : board.team) {
+        inPossession = inPossession || p.in_possession;
+        std::tuple<int,int> playerPoss(p.i, p.j);
+
+        dist = distance(ballPoss, playerPoss);
+        boardPoints += dist*POINTS::BALL_DISTANCE; //Notar que si tiene la pelota es 0;
+
+        if(p.in_possession){
+
+            int mejor_dist = -1;
+            for(std::tuple<int,int>t : goalPoss){
+                dist = distance(t, playerPoss);
+                if(mejor_dist == -1 || dist < mejor_dist)
+                    mejor_dist = dist;
+            }
+            boardPoints += mejor_dist*POINTS::GOAL_DISTANCE; //Notar que si entro al arco es 0;
+
+        }else{
+            //Evaluo el equipo contrario
+            for (const player_status& op : board.oponent_team) {
+                if(p.in_possession){
+                    std::tuple<int,int> opPlayerPoss(op.i, op.j);
+
+                    dist = distance(opPlayerPoss, playerPoss);
+                    boardPoints += dist*POINTS::OPONENT_wBALL_DISTANCE;
+                    //Notar que si estoy con mi oponente es 0;
+                }
+            }
+        }
     }
 
-    //if(board.ball.is_free){
-
-    //}
+    if(inPossession){
+        boardPoints += POINTS::BALL_POSSESSION;
+    }else if(board.ball.is_free){
+        boardPoints += POINTS::BALL_FREE;
+    }else{
+        boardPoints += POINTS::BALL_OPONENT_POSSESSION;
+    }
     
     return boardPoints;
 };
