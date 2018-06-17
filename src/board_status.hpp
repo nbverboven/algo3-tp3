@@ -28,12 +28,12 @@ struct move {
 const std::vector<move> MOVES = {{0, -1, -1}, {1, -1, 0}, {2, -1, 1}, {3, 0, 1}, {4, 1, 1}, {5, 1, 0}, {6, 1, -1}, {7, 0, -1}, {8, 0, 0}};
 
 struct player_move {
-    int player_id;
-    std::string move_type;
-    int dir;
-    // Solo sirve para cuando el tipo de movimiento es un pase e indica cuanta
-    // fuerza tiene el pase (i.e. cuan lejos llegará el balón si nadie lo intercepta)
-    int steps; 
+	int player_id;
+	std::string move_type;
+	int dir;
+	// Solo sirve para cuando el tipo de movimiento es un pase e indica cuanta
+	// fuerza tiene el pase (i.e. cuan lejos llegará el balón si nadie lo intercepta)
+	int steps; 
 };
 
 struct player_status {
@@ -46,23 +46,23 @@ struct player_status {
 	player_status() {}
 	player_status(int id) : id(id) {}
 	player_status(int id, double probability) : id(id), probability(probability) {}
-    player_status(int id, int i, int j, bool in_possession) 
+	player_status(int id, int i, int j, bool in_possession) 
 		: id(id), i(i), j(j), in_possession(in_possession) {}
 	player_status(int id, int i, int j, double probability, bool in_possession) 
 		: id(id), i(i), j(j), probability(probability), in_possession(in_possession) {}
 	player_status(const player_status &otro)
 		: id(otro.id), i(otro.i), j(otro.j), probability(otro.probability), in_possession(otro.in_possession) {}
 
-    void move(player_move pm){
-        if(pm.player_id == id){
-            if(pm.move_type == PASE)
-                in_possession = false;
+	void move(player_move pm){
+		if(pm.player_id == id){
+			if(pm.move_type == PASE)
+				in_possession = false;
 
-            struct move m(MOVES[pm.dir]);
-            i += m.i;
-            j += m.j;
-        }
-    }
+			struct move m(MOVES[pm.dir]);
+			i += m.i;
+			j += m.j;
+		}
+	}
 };
 
 struct ball_status {
