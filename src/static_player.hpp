@@ -6,8 +6,8 @@
 #include "board_status.hpp"
 #include "constants.hpp"
 
-std::random_device rd;
-std::mt19937 generator(rd());
+#ifndef STATIC_PLAYER
+#define STATIC_PLAYER
 
 class static_player {
 
@@ -50,7 +50,7 @@ public:
 		}
 	}
 
-	void make_move(const board_status& current_board, std::vector<player_move>& made_moves) {
+	virtual void make_move(const board_status& current_board, std::vector<player_move>& made_moves) {
 		made_moves.clear();
 		player_move new_move;
 
@@ -63,4 +63,14 @@ public:
 	}
 
 	void finish(std::string result) { }
+
+	std::vector<player> getPlayers() {
+		return this->players;
+	}
+
+	std::vector<player> getOponentPlayers() {
+		return this->oponent_players;
+	}
 };
+
+#endif
