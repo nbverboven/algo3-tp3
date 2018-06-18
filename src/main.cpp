@@ -5,7 +5,7 @@
 
 //#include "static_player.hpp"
 #include "player_controller.hpp"
-#include "GreedyPlayer.cpp"
+#include "GreedyPlayer.h"
 
 int main(int argc, char **argv ) {
     player_controller<GreedyPlayer> player(argv[1]);
