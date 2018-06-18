@@ -1,5 +1,11 @@
 #include "LogicalBoard.h"
 
+/* Para generar un número al azar entre 0 y 1 de una distribucíón
+   uniforme */
+std::random_device rnd_device;
+std::mt19937 rnd_generator(rnd_device());
+std::uniform_real_distribution<double> distribution(0, 1);
+
 LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &team_A, const std::vector<player> &team_B)
 	: _columns(columns), _rows(rows)
 {
@@ -15,14 +21,12 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &tea
 	{
 		(this->_team_B).push_back(player_status(p.id, p.probability));
 	}
+
 	// inicializa las posiciones de los arcos
-	std::vector<int> goalRows(3);
 	for (int i = 0; i < 3; ++i) {
-		goalRows[i] = (int) (floor(this->_rows / 2)) - 1 + i;
-	}
-	for (int i = 0; i < 3; ++i) {
-		this->_goal_A.push_back(std::make_pair(goalRows[i], -1));
-		this->_goal_B.push_back(std::make_pair(goalRows[i], this->_columns));
+		int goalRow = floor(this->_rows / 2) - 1 + i;
+		this->_goal_A.push_back(std::make_pair(goalRow, -1));
+		this->_goal_B.push_back(std::make_pair(goalRow, this->_columns));
 	}
 }
 
@@ -115,22 +119,13 @@ void LogicalBoard::makeTeamMove(std::vector<player_status> &team, std::vector<pl
 void LogicalBoard::fightBall(player_status &player_with_ball, player_status &player_without_ball)
 {
 	// Probabilidad de defensa
-	float p_defend_ball = 1 - player_with_ball.probability;
+	double p_defend_ball = 1 - player_with_ball.probability;
 
 	// Probabilidad de ataque
-	float p_take_ball = player_without_ball.probability;
+	double p_take_ball = player_without_ball.probability;
 
 	// Normalización de la probabilidad de ataque
 	p_take_ball = p_take_ball / (p_take_ball + p_defend_ball);
-
-	/* Genero un número al azar entre 0 y 1 de una distribucíón
-       uniforme
-       Nota: puede que sea mejor poner esto en otro lado para
-       no tener que crear el generador, inicializarlo, etc.
-       cada vez que quiero disputar la pelota */
-	std::mt19937 rnd_generator;
-	rnd_generator.seed(std::random_device()());
-	std::uniform_real_distribution<float> distribution(0, 1);
 
 	if (distribution(rnd_generator) <= p_take_ball)
 	{
@@ -142,14 +137,7 @@ void LogicalBoard::fightBall(player_status &player_with_ball, player_status &pla
 void LogicalBoard::fairFightBall(player_status &p1, player_status &p2)
 {
 	// Probabilidad de que p2 se quede con la pelota
-	float p_p2 = p2.probability / (p1.probability + p2.probability);
-
-	/* Genero un número al azar entre 0 y 1 de una distribucíón
-       uniforme
-       Nota: ver nota en función fightBall */
-	std::mt19937 rnd_generator;
-	rnd_generator.seed(std::random_device()());
-	std::uniform_real_distribution<float> distribution(0, 1);
+	double p_p2 = p2.probability / (p1.probability + p2.probability);
 
 	if (distribution(rnd_generator) < p_p2)
 	{

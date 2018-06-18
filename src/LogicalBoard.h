@@ -112,7 +112,7 @@ public:
 	std::vector<player_status>& getTeam(std::string team);
 
 	/**
-	 * Si la pelota está libre, devuelve un puntero a la misma. Si no, devuelve nullptr
+	 * Devuelve el estado de la pelota
 	 */
 	ball_status getBall();
 
@@ -124,7 +124,7 @@ public:
 	friend std::ostream& operator<<(std::ostream &os, const LogicalBoard &lb);
 
 private:
-	/** Par (puntaje equipo A, puntaje equipo B) */
+	/** Diccionario (clave: equipo, significado: puntaje) */
 	std::map<std::string, unsigned int> _score;
 
 	/** Equipos */
