@@ -135,21 +135,27 @@ std::vector<std::vector<player_move>> GreedyPlayer::generateMoves(const board_st
         }
     }
 
-    // TODO: arreglar esta logica para armar jugadas de la forma 1 pase + dos desplazamientos
-    // for (const player_status& player: current_board.team) {
-    //     if (player.in_possession) {
-    //         // player tiene la pelota: generar los pases/tiros
-    //         // en todas las direcciones posibles
-    //         for (int stepSize = 1; stepSize < rows/2; ++stepSize) {
-    //             std::vector<player_move> currentTeamMove;
-    //             for (int direccionTiro = 0; direccionTiro < movesSize; ++direccionTiro) {
-
-    //                 nextMoves.push_back(player_move(player.id, PASE, direccionTiro, stepSize));
-    //                 nextMoves.push_back(currentTeamMove);
-
-    //             }
-    //         }
-    //     }
-    // }
+    // arma las jugadas de la forma 'un pase + dos desplazamientos'
+    std::vector<int> freePlayers = {0, 1, 2};
+    for (const player_status& player: current_board.team) {
+        if (player.in_possession) {
+            // elimina especificamente el indice "player.id" del vector
+            // para hacer que los otros dos jugadores se desplacen
+            freePlayers.erase(freePlayers.begin() + player.id);
+            for (int stepSize = 1; stepSize < rows/2; ++stepSize) {
+                for (int direccionTiro = 0; direccionTiro < movesSize; ++direccionTiro) {
+                    for (int d1 = 0; d1 < movesSize; ++d1) {
+                        for (int d2 = 0; d2 < movesSize; ++d2) {
+                            std::vector<player_move> currentTeamMove;
+                            currentTeamMove.push_back(player_move(player.id, PASE, direccionTiro, stepSize));
+                            currentTeamMove.push_back(player_move(freePlayers[0], MOVIMIENTO, d1));
+                            currentTeamMove.push_back(player_move(freePlayers[1], MOVIMIENTO, d2));
+                            nextMoves.push_back(currentTeamMove);
+                        }
+                    }
+                }
+            }
+        }
+    }
     return nextMoves;
 }
