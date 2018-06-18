@@ -47,26 +47,14 @@ struct player_status {
 	player_status() {}
 	player_status(int id) : id(id) {}
 	player_status(int id, double probability) : id(id), probability(probability) {}
-<<<<<<< HEAD
-	player_status(int id, int i, int j, double probability, bool in_possession) 
-=======
-	player_status(int id, int i, int j, bool in_possession)
-		: id(id), i(i), j(j), in_possession(in_possession) {}
 	player_status(int id, int i, int j, double probability, bool in_possession)
->>>>>>> 08830413d873258a87ff309b672e8a5e1cf99957
 		: id(id), i(i), j(j), probability(probability), in_possession(in_possession) {}
 	player_status(const player_status &otro)
 		: id(otro.id), i(otro.i), j(otro.j), probability(otro.probability), in_possession(otro.in_possession) {}
 
-<<<<<<< HEAD
 	void move(player_move pm) {
 		if (pm.player_id == id) {
 			if (pm.move_type == PASE) {
-=======
-	void move(const player_move& pm){
-		if(pm.player_id == id){
-			if(pm.move_type == PASE)
->>>>>>> 08830413d873258a87ff309b672e8a5e1cf99957
 				in_possession = false;
 			}
 			else {
