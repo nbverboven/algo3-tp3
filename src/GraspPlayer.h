@@ -1,5 +1,5 @@
-#ifndef GREEDY_PLAYER
-#define GREEDY_PLAYER
+#ifndef GRASP_PLAYER
+#define GRASP_PLAYER
 
 #include <vector>
 #include "GenericPlayer.hpp"
@@ -7,16 +7,16 @@
 #include "constants.hpp"
 #include "LogicalBoard.h"
 
-class GreedyPlayer : public GenericPlayer {
+class GraspPlayer : public GenericPlayer {
 
 public:
 
-    GreedyPlayer() = default;
+    GraspPlayer() = default;
 
     /**
      * Constructor.
      */
-    GreedyPlayer(
+    GraspPlayer(
         int columns,
         int rows,
         int steps,
@@ -29,7 +29,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~GreedyPlayer();
+    virtual ~GraspPlayer();
 
     /**
      * Modifica la lista pasada como parámetro con los movimientos de los juegadores

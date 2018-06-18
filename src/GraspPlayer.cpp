@@ -1,9 +1,9 @@
-#include "GreedyPlayer.h"
+#include "GraspPlayer.h"
 #include <iostream>
 #include "board_status.hpp"
 #include "constants.hpp"
 
-GreedyPlayer::GreedyPlayer(
+GraspPlayer::GraspPlayer(
     int columns,
     int rows,
     int steps,
@@ -24,14 +24,13 @@ GreedyPlayer::GreedyPlayer(
     }
 }
 
-GreedyPlayer::~GreedyPlayer(){}
+GraspPlayer::~GraspPlayer(){}
 
 std::random_device rd;
 std::mt19937 generator(rd());
 static std::uniform_int_distribution<int> uid(0,8); // random dice
 
-
-void GreedyPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){
+void GraspPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){
 
     //Update del tablero lógico con los movimientos del contrario
     this->logicalBoard.updateBoard(current_board, this->team);
@@ -102,7 +101,7 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
  * Setea los movimientos del oponente.
  * Por ahora, no se mueven.
  */
-void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves){
+void GraspPlayer::setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves){
     oponent_moves.clear();
     player_move new_move;
     for (auto& p : current_board.oponent_team) {
@@ -112,63 +111,3 @@ void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vecto
         oponent_moves.push_back(new_move);
     }
 }
-
-
-/**
- * Evalua el estado del tablero, mientras menos puntos tenga mejor,
- * ( Ej: Si el jugador tiene la pelota y se esta acercando al arco
- * va a tener menos puntos cuando mas se acerque )
- */
-/*int GreedyPlayer::EvaluateBoard(const board_status& board){
-    int boardPoints = 0;
-
-    int dist,points;
-    bool inPossession = false;
-    std::pair<int,int> ballPoss(board.ball.i, board.ball.j);
-    std::vector<std::pair<int, int>>  goalPoss = this->logicalBoard.getGoal(this->team);
-
-    std::string opTeam = (this->team==A)?B:A;
-    std::vector<std::pair<int, int>>  oponentGoalPoss = this->logicalBoard.getGoal(opTeam);
-
-    //Evaluo mi equipo
-    for (const player_status& p : board.team) {
-        inPossession = inPossession || p.in_possession;
-        std::pair<int,int> playerPoss(p.i, p.j);
-
-        dist = distance(ballPoss, playerPoss);
-        boardPoints += dist*(this->_genome).ball_distance; //Notar que si tiene la pelota es 0;
-
-        if(p.in_possession){
-
-            int mejor_dist = -1;
-            for(std::pair<int,int>t : goalPoss){
-                dist = distance(t, playerPoss);
-                if(mejor_dist == -1 || dist < mejor_dist)
-                    mejor_dist = dist;
-            }
-            boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
-
-        }else{
-            //Evaluo el equipo contrario
-            for (const player_status& op : board.oponent_team) {
-                if(p.in_possession){
-                    std::pair<int,int> opPlayerPoss(op.i, op.j);
-
-                    dist = distance(opPlayerPoss, playerPoss);
-                    boardPoints += dist*(this->_genome).oponent_with_ball_distance;
-                    //Notar que si estoy con mi oponente es 0;
-                }
-            }
-        }
-    }
-
-    if(inPossession){
-        boardPoints += (this->_genome).ball_possession;
-    }else if(board.ball.is_free){
-        boardPoints += (this->_genome).ball_free;
-    }else{
-        boardPoints += (this->_genome).ball_in_oponent_possession;
-    }
-
-    return boardPoints;
-};*/
