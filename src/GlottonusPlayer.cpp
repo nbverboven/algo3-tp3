@@ -118,7 +118,7 @@ void GlottonusPlayer::setOponentMoves(const board_status& current_board, std::ve
 /**
  * Calcula la distancia entre dos puntos
  */
-int distance(const std::tuple<int,int>& t1, const std::tuple<int,int>& t2){
+int distance(const std::pair<int,int>& t1, const std::pair<int,int>& t2){
     int x = (std::get<0>(t2) - std::get<0>(t1))^2;
     int y = (std::get<1>(t2) - std::get<1>(t1))^2;
     int distance = sqrt(x - y);
@@ -135,7 +135,7 @@ int GlottonusPlayer::EvaluateBoard(const board_status& board){
 
     int dist,points;
     bool inPossession = false;
-    std::tuple<int,int> ballPoss(board.ball.i, board.ball.j);
+    std::pair<int,int> ballPoss(board.ball.i, board.ball.j);
     std::vector<std::pair<int, int>>  goalPoss = this->logicalBoard.getGoal(this->team);
 
     std::string opTeam = (this->team==A)?B:A;
@@ -144,7 +144,7 @@ int GlottonusPlayer::EvaluateBoard(const board_status& board){
     //Evaluo mi equipo
     for (const player_status& p : board.team) {
         inPossession = inPossession || p.in_possession;
-        std::tuple<int,int> playerPoss(p.i, p.j);
+        std::pair<int,int> playerPoss(p.i, p.j);
 
         dist = distance(ballPoss, playerPoss);
         boardPoints += dist*POINTS::BALL_DISTANCE; //Notar que si tiene la pelota es 0;
@@ -152,7 +152,7 @@ int GlottonusPlayer::EvaluateBoard(const board_status& board){
         if(p.in_possession){
 
             int mejor_dist = -1;
-            for(std::tuple<int,int>t : goalPoss){
+            for(std::pair<int,int>t : goalPoss){
                 dist = distance(t, playerPoss);
                 if(mejor_dist == -1 || dist < mejor_dist)
                     mejor_dist = dist;
@@ -163,7 +163,7 @@ int GlottonusPlayer::EvaluateBoard(const board_status& board){
             //Evaluo el equipo contrario
             for (const player_status& op : board.oponent_team) {
                 if(p.in_possession){
-                    std::tuple<int,int> opPlayerPoss(op.i, op.j);
+                    std::pair<int,int> opPlayerPoss(op.i, op.j);
 
                     dist = distance(opPlayerPoss, playerPoss);
                     boardPoints += dist*POINTS::OPONENT_wBALL_DISTANCE;
