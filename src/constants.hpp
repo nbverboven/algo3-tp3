@@ -8,6 +8,7 @@ const std::string A = "A";
 const std::string B = "B";
 
 const std::string IZQUIERDA = "IZQUIERDA";
+const std::string DERECHA = "DERECHA";
 
 const std::string MOVIMIENTO = "MOVIMIENTO";
 const std::string PASE = "PASE";
