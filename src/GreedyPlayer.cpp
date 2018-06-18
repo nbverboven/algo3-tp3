@@ -1,10 +1,10 @@
-#include "GlottonusPlayer.h"
+#include "GreedyPlayer.h"
 #include <iostream>
 #include "board_status.hpp"
 #include "constants.hpp"
 #include "LogicalBoard.cpp"
 
-GlottonusPlayer::GlottonusPlayer(
+GreedyPlayer::GreedyPlayer(
     int columns,
     int rows,
     int steps,
@@ -26,7 +26,7 @@ GlottonusPlayer::GlottonusPlayer(
     }
 }
 
-GlottonusPlayer::~GlottonusPlayer(){}
+GreedyPlayer::~GreedyPlayer(){}
 
 std::random_device rd;
 std::mt19937 generator(rd());
@@ -34,7 +34,7 @@ static std::uniform_int_distribution<int> uid(1,9); // random dice
 
 
 
-void GlottonusPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){   
+void GreedyPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){   
     //Update del tablero lógico con los movimientos del contrario
     this->logicalBoard.updateBoard(current_board, this->team);
 
@@ -104,7 +104,7 @@ void GlottonusPlayer::make_move(const board_status& current_board, std::vector<p
  * Setea los movimientos del oponente. 
  * Por ahora, no se mueven.
  */
-void GlottonusPlayer::setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves){
+void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves){
     oponent_moves.clear();
     player_move new_move;
     for (auto& p : current_board.oponent_team) {
@@ -130,7 +130,7 @@ int distance(const std::pair<int,int>& t1, const std::pair<int,int>& t2){
  * ( Ej: Si el jugador tiene la pelota y se esta acercando al arco
  * va a tener menos puntos cuando mas se acerque )
  */
-int GlottonusPlayer::EvaluateBoard(const board_status& board){
+int GreedyPlayer::EvaluateBoard(const board_status& board){
     int boardPoints = 0;
 
     int dist,points;

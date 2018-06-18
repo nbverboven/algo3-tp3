@@ -518,8 +518,10 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 			players.push_back(p);
 		}
 
+		//set([(p.i, p.j) for p in team])
+
 		// Dos jugadores del mismo equipo estan en la misma posicion
-		//valid = valid and len(set([(p.i, p.j) for p in team])) == len(team)
+		//ret = ret && team.size() ===
 
 		// Todos los jugadores deben estar dentro de la cancha
 		for (player_status &p : players){

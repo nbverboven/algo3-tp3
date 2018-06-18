@@ -7,16 +7,16 @@
 #include "constants.hpp"
 #include "LogicalBoard.h"
 
-class GlottonusPlayer : public static_player {
+class GreedyPlayer : public static_player {
 
 public:
 
-    GlottonusPlayer() = default;
+    GreedyPlayer() = default;
 
     /**
      * Constructor.
      */
-    GlottonusPlayer(
+    GreedyPlayer(
         int columns,
         int rows,
         int steps,
@@ -28,7 +28,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~GlottonusPlayer();
+    virtual ~GreedyPlayer();
 
     /**
      * Modifica la lista pasada como parámetro con los movimientos de los juegadores
