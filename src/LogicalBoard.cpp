@@ -1,4 +1,5 @@
 #include "LogicalBoard.h"
+#include <iostream>
 
 /* Para generar un número al azar entre 0 y 1 de una distribucíón
    uniforme */
@@ -437,7 +438,7 @@ void LogicalBoard::startingPositions(const std::vector<std::pair<int, int>> &pos
 bool LogicalBoard::positionInBoard(int i, int j) const
 {
 	bool i_ok = i >= 0 && i < this->_rows;
-	bool j_ok = j >= 0 && j < this->_rows;
+	bool j_ok = j >= 0 && j < this->_columns;
 	return i_ok && j_ok;
 }
 
@@ -470,9 +471,8 @@ ball_status LogicalBoard::getBall()
 
 bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves){
 	bool ret = true;
-
 	std::vector<player_status> players;
-	std::vector<player_move> player_moves;
+	std::vector<player_move> player_moves(3);
 	ball_status ball;
 	//Exactamente un movimiento por jugador del equipo
 	//Lo transformo a un vector asociativo
@@ -483,6 +483,9 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 		}
 	}
 
+	assert(moves.size() == 3);
+	assert(player_moves.size() == 3);
+	assert(team.size() == 3);
 	ret = ret && moves.size() == player_moves.size();	//son los mismos (nadie se movio 2 veces)
 	ret = ret && team.size() == player_moves.size();	//un movimiento por jugador
 
@@ -497,7 +500,7 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 				ret = false; //Quiere pasar la pelota pero no la tiene
 			}else{
 				move _move = MOVES[pm.dir];
-				// Mirar que el pase es válido: O sea que termina adentro de la cancha, en algún 
+				// Mirar que el pase es válido: O sea que termina adentro de la cancha, en algún
 				// arco o cruza un arco (ya que va de a dos pasos por vez).
 				// Además, no puede ser más largo que M / 2
 				ret = ret && _move.j <= this->_rows / 2;
@@ -525,7 +528,7 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 			conj.insert(std::make_pair(p.i, p.j));
 		}
 
-		// Dos jugadores del mismo equipo estan en la misma posicion				
+		// Dos jugadores del mismo equipo estan en la misma posicion
 		ret = ret && team.size() == conj.size();
 
 		// Todos los jugadores deben estar dentro de la cancha
