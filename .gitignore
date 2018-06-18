@@ -4,3 +4,6 @@ src/log/*
 .DS_Store
 .vscode
 src/static_player
+src/greedy_player
+info.plist
+greedy_player.dSYM
