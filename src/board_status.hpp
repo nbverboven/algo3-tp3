@@ -89,6 +89,15 @@ struct ball_status {
 			--steps;
 		}
 	}
+
+	std::vector<std::pair<int,int> > trajectory() {
+		struct move m(MOVES[dir]);
+		std::vector<std::pair<int,int> > ret;
+		for(int k=0; k < steps; k++){
+			ret.push_back( {i + i*m.i, j + j*m.j} );
+		}
+		return ret;
+	}
 };
 
 struct board_status {

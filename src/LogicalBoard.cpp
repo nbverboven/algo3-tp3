@@ -487,29 +487,46 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 	ret = ret && team.size() == player_moves.size();	//un movimiento por jugador
 
 	if(ret){
+		std::set<std::pair<int,int> > conj;
 		for (player_status p : team){
-			player_move m = player_moves[p.id];
+			player_move pm = player_moves[p.id];
 
-			if(m.move_type == MOVIMIENTO){
-				p.move(m);
+			if(pm.move_type == MOVIMIENTO){
+				p.move(pm);
 			}else if(!p.in_possession){
 				ret = false; //Quiere pasar la pelota pero no la tiene
 			}else{
+				move _move = MOVES[pm.dir];
 				// Mirar que el pase es válido: O sea que termina adentro de la cancha, en algún 
 				// arco o cruza un arco (ya que va de a dos pasos por vez).
 				// Además, no puede ser más largo que M / 2
-				
-				//TODO mover la pelota cambiando la variable 'ball'
+				ret = ret && _move.j <= this->_rows / 2;
 
+				ball.i = p.i;
+				ball.j = p.j;
+				ball.move(_move);
+				std::vector<std::pair<int,int> > ball_trajectory = ball.trajectory();
+
+				bool trajectoryValid = true;
+				bool trajectoryInGoal = false;
+				for(std::pair<int,int> par : ball_trajectory){
+					std::pair<int, int> poss(p.i,p.j);
+					for(std::pair<int, int> t : this->_goal_A)
+					 	trajectoryInGoal = trajectoryInGoal || poss==t;
+					for(std::pair<int, int> t : this->_goal_B)
+					 	trajectoryInGoal = trajectoryInGoal || poss==t;
+					//La trajectoria debe estar en el tablero o en un arco.
+					trajectoryValid = trajectoryInGoal || this->positionInBoard(p.i, p.j);
+				}
+				ret = ret && trajectoryValid;
 			}
 
 			players.push_back(p);
+			conj.insert(std::make_pair(p.i, p.j));
 		}
 
-		//set([(p.i, p.j) for p in team])
-
-		// Dos jugadores del mismo equipo estan en la misma posicion
-		//ret = ret && team.size() ===
+		// Dos jugadores del mismo equipo estan en la misma posicion				
+		ret = ret && team.size() == conj.size();
 
 		// Todos los jugadores deben estar dentro de la cancha
 		for (player_status &p : players){
@@ -519,7 +536,7 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 				std::pair<int, int> poss(p.i,p.j);
 				for(std::pair<int, int> t : this->_goal_A)
 					inGoalPosition = inGoalPosition || poss==t;
-				for(std::pair<int, int> t : this->_goal_A)
+				for(std::pair<int, int> t : this->_goal_B)
 					inGoalPosition = inGoalPosition || poss==t;
 			}
 
