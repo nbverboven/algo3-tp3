@@ -34,6 +34,22 @@ struct player_move {
 	// Solo sirve para cuando el tipo de movimiento es un pase e indica cuanta
 	// fuerza tiene el pase (i.e. cuan lejos llegará el balón si nadie lo intercepta)
 	int steps;
+
+	/**
+	 * Construye un player move sin setear ninguno de los campos.
+	 */
+	player_move() {
+	}
+
+	/**
+	 * Construye un player move con los parametros indicados.
+	 */
+	player_move(int playerId, std::string moveType, int direction, int stepsCount=-1){
+		this->player_id = playerId;
+		this->move_type = moveType;
+		this->dir = direction;
+		this->steps = stepsCount;
+	}
 };
 
 struct player_status {
