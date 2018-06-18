@@ -21,14 +21,12 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &tea
 	{
 		(this->_team_B).push_back(player_status(p.id, p.probability));
 	}
+
 	// inicializa las posiciones de los arcos
-	std::vector<int> goalRows(3);
 	for (int i = 0; i < 3; ++i) {
-		goalRows[i] = (int) (floor(this->_rows / 2)) - 1 + i;
-	}
-	for (int i = 0; i < 3; ++i) {
-		this->_goal_A.push_back(std::make_pair(goalRows[i], -1));
-		this->_goal_B.push_back(std::make_pair(goalRows[i], this->_columns));
+		int goalRow = floor(this->_rows / 2) - 1 + i;
+		this->_goal_A.push_back(std::make_pair(goalRow, -1));
+		this->_goal_B.push_back(std::make_pair(goalRow, this->_columns));
 	}
 }
 
