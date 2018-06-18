@@ -2,7 +2,6 @@
 #include <iostream>
 #include "board_status.hpp"
 #include "constants.hpp"
-#include "LogicalBoard.cpp"
 
 GreedyPlayer::GreedyPlayer(
     int columns,
@@ -30,11 +29,12 @@ GreedyPlayer::~GreedyPlayer(){}
 
 std::random_device rd;
 std::mt19937 generator(rd());
-static std::uniform_int_distribution<int> uid(1,9); // random dice
+static std::uniform_int_distribution<int> uid(0,8); // random dice
 
 
 
-void GreedyPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){   
+void GreedyPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){
+
     //Update del tablero lógico con los movimientos del contrario
     this->logicalBoard.updateBoard(current_board, this->team);
 
@@ -49,42 +49,46 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
     //Movimientos
     std::vector<player_move> oponent_moves;
     this->setOponentMoves(test_board, oponent_moves);
-    player_move new_move;
     //Inicializo
-    test_board.team.clear();
     made_moves.clear();
 
     int LIMITE_TESTEO_TABLEROS = 1;
 
     for(int i=0; i<LIMITE_TESTEO_TABLEROS || newBoardPoints < currentBoardPoints; i++){
-        made_moves.clear();
 
         test_board.ball = current_board.ball;
 
-        //Realizo mis movimientos
-        for (auto& p : current_board.team) {
-            new_move.player_id = p.id;
-            new_move.move_type = MOVIMIENTO;
-            new_move.dir =  uid(generator); // use rng as a generator  ; //4;
-            made_moves.push_back(new_move);
+        while (true) {
+            made_moves.clear();
+            //Realizo mis movimientos
+            for (auto& p : current_board.team) {
+                player_move new_move;
+                new_move.player_id = p.id;
+                new_move.move_type = MOVIMIENTO;
+                new_move.dir =  uid(generator); // use rng as a generator  ; //4;
+                made_moves.push_back(new_move);
+            }
 
-            if(this->logicalBoard.isValidTeamMove(test_board.team, made_moves)){
-                player_status jg(p);
-                jg.move(new_move);
+            if(this->logicalBoard.isValidTeamMove(test_board.team, made_moves)) {
+                for (int i = 0; i < 3; ++i) {
+                    //Si el jugador tenia la pelota, la muevo con él
+                    player_status jg = current_board.team[i];
+                    jg.move(made_moves[i]);
 
-                //Si el jugador tenia la pelota, la muevo con él
-                if(p.in_possession){
-                    if(new_move.move_type == PASE){
-                        test_board.ball.move(MOVES[new_move.dir]);
-                    }else{
-                        test_board.ball.i = jg.i; 
-                        test_board.ball.j = jg.j; 
+                    //if(p.in_possession){
+                    if(jg.in_possession){
+                        if(made_moves[i].move_type == PASE){
+                            test_board.ball.move(MOVES[made_moves[i].dir]);
+                        }else{
+                            test_board.ball.i = jg.i;
+                            test_board.ball.j = jg.j;
+                        }
                     }
                 }
-                
-                test_board.team.push_back(jg);
+                break;
             }
         }
+
 
         //IMPORTANTE: ver que la juagda sea válida con el LogicalBoard
         if(this->team == A)
@@ -101,7 +105,7 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
 }
 
 /**
- * Setea los movimientos del oponente. 
+ * Setea los movimientos del oponente.
  * Por ahora, no se mueven.
  */
 void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves){
@@ -180,6 +184,6 @@ int GreedyPlayer::EvaluateBoard(const board_status& board){
     }else{
         boardPoints += POINTS::BALL_OPONENT_POSSESSION;
     }
-    
+
     return boardPoints;
 };
