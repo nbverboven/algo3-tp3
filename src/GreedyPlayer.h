@@ -43,6 +43,12 @@ protected:
      */
     void setOponentMoves(const board_status& current_board, std::vector<player_move>& oponent_moves);
 
+    /**
+     * Genera todos los movimientos posibles a partir del estado
+     * actual del equipo.
+     */
+    std::vector<player_move> generateMoves();
+
     std::vector<player> players;
     std::vector<player> oponents;
     LogicalBoard logicalBoard;

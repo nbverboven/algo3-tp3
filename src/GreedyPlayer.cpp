@@ -113,62 +113,26 @@ void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vecto
     }
 }
 
-
 /**
- * Evalua el estado del tablero, mientras menos puntos tenga mejor,
- * ( Ej: Si el jugador tiene la pelota y se esta acercando al arco
- * va a tener menos puntos cuando mas se acerque )
+ * Genera todos los movimientos posibles a partir del estado
+ * actual del equipo.
  */
-/*int GreedyPlayer::EvaluateBoard(const board_status& board){
-    int boardPoints = 0;
+std::vector<player_move> GreedyPlayer::generateMoves() {
+    std::vector<player_move> nextMoves;
 
-    int dist,points;
-    bool inPossession = false;
-    std::pair<int,int> ballPoss(board.ball.i, board.ball.j);
-    std::vector<std::pair<int, int>>  goalPoss = this->logicalBoard.getGoal(this->team);
-
-    std::string opTeam = (this->team==A)?B:A;
-    std::vector<std::pair<int, int>>  oponentGoalPoss = this->logicalBoard.getGoal(opTeam);
-
-    //Evaluo mi equipo
-    for (const player_status& p : board.team) {
-        inPossession = inPossession || p.in_possession;
-        std::pair<int,int> playerPoss(p.i, p.j);
-
-        dist = distance(ballPoss, playerPoss);
-        boardPoints += dist*(this->_genome).ball_distance; //Notar que si tiene la pelota es 0;
-
-        if(p.in_possession){
-
-            int mejor_dist = -1;
-            for(std::pair<int,int>t : goalPoss){
-                dist = distance(t, playerPoss);
-                if(mejor_dist == -1 || dist < mejor_dist)
-                    mejor_dist = dist;
-            }
-            boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
-
-        }else{
-            //Evaluo el equipo contrario
-            for (const player_status& op : board.oponent_team) {
-                if(p.in_possession){
-                    std::pair<int,int> opPlayerPoss(op.i, op.j);
-
-                    dist = distance(opPlayerPoss, playerPoss);
-                    boardPoints += dist*(this->_genome).oponent_with_ball_distance;
-                    //Notar que si estoy con mi oponente es 0;
-                }
+    // genera todas las combinaciones de desplazamientos
+    // por el tablero
+    int movesSize = MOVES.size();
+    for (int d1 = 0; d1 < movesSize; ++d1) {
+        for (int d2 = 0; d2 < movesSize; ++d2) {
+            for (int d3 = 0; d3 < movesSize; ++d3) {
+                nextMoves.push_back(player_move(0, MOVIMIENTO, d1));
+                nextMoves.push_back(player_move(1, MOVIMIENTO, d2));
+                nextMoves.push_back(player_move(2, MOVIMIENTO, d3));
             }
         }
     }
 
-    if(inPossession){
-        boardPoints += (this->_genome).ball_possession;
-    }else if(board.ball.is_free){
-        boardPoints += (this->_genome).ball_free;
-    }else{
-        boardPoints += (this->_genome).ball_in_oponent_possession;
-    }
-
-    return boardPoints;
-};*/
+    // TODO: si alguno tiene la pelota, genera todos los pases/tiros
+    // posibles
+}
