@@ -22,7 +22,8 @@ public:
         int steps,
         std::string side,
         const std::vector<player>& players, // Este no lo usa para nada
-        const std::vector<player>& oponent_players // Este no lo usa para nada
+        const std::vector<player>& oponent_players, // Este no lo usa para nada
+        genome weights = genome()
     );
 
     /**
@@ -51,7 +52,7 @@ protected:
     std::vector<player> players;
     std::vector<player> oponents;
     LogicalBoard logicalBoard;
-
+    genome _genome;
 };
 
 #endif //GLOTTONUS_PLAYER

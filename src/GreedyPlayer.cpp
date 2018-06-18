@@ -9,10 +9,9 @@ GreedyPlayer::GreedyPlayer(
     int steps,
     std::string side,
     const std::vector<player>& players, // Este no lo usa para nada
-    const std::vector<player>& oponent_players // Este no lo usa para nada
+    const std::vector<player>& oponent_players, // Este no lo usa para nada
+    genome weights
 ){
-    this->columns = columns;
-    this->rows = rows;
     this->steps = steps;
     this->side = side;
 
@@ -151,7 +150,7 @@ int GreedyPlayer::EvaluateBoard(const board_status& board){
         std::pair<int,int> playerPoss(p.i, p.j);
 
         dist = distance(ballPoss, playerPoss);
-        boardPoints += dist*POINTS::BALL_DISTANCE; //Notar que si tiene la pelota es 0;
+        boardPoints += dist*(this->_genome).ball_distance; //Notar que si tiene la pelota es 0;
 
         if(p.in_possession){
 
@@ -161,7 +160,7 @@ int GreedyPlayer::EvaluateBoard(const board_status& board){
                 if(mejor_dist == -1 || dist < mejor_dist)
                     mejor_dist = dist;
             }
-            boardPoints += mejor_dist*POINTS::GOAL_DISTANCE; //Notar que si entro al arco es 0;
+            boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
 
         }else{
             //Evaluo el equipo contrario
@@ -170,7 +169,7 @@ int GreedyPlayer::EvaluateBoard(const board_status& board){
                     std::pair<int,int> opPlayerPoss(op.i, op.j);
 
                     dist = distance(opPlayerPoss, playerPoss);
-                    boardPoints += dist*POINTS::OPONENT_wBALL_DISTANCE;
+                    boardPoints += dist*(this->_genome).oponent_with_ball_distance;
                     //Notar que si estoy con mi oponente es 0;
                 }
             }
@@ -178,11 +177,11 @@ int GreedyPlayer::EvaluateBoard(const board_status& board){
     }
 
     if(inPossession){
-        boardPoints += POINTS::BALL_POSSESSION;
+        boardPoints += (this->_genome).ball_possession;
     }else if(board.ball.is_free){
-        boardPoints += POINTS::BALL_FREE;
+        boardPoints += (this->_genome).ball_free;
     }else{
-        boardPoints += POINTS::BALL_OPONENT_POSSESSION;
+        boardPoints += (this->_genome).ball_in_oponent_possession;
     }
 
     return boardPoints;
