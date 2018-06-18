@@ -117,7 +117,7 @@ void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vecto
  * Genera todos los movimientos posibles a partir del estado
  * actual del equipo.
  */
-std::vector<player_move> GreedyPlayer::generateMoves() {
+std::vector<player_move> GreedyPlayer::generateMoves(const board_status& current_board) {
     std::vector<player_move> nextMoves;
 
     // genera todas las combinaciones de desplazamientos
@@ -132,7 +132,16 @@ std::vector<player_move> GreedyPlayer::generateMoves() {
             }
         }
     }
+    for (const player_status& player: current_board.team) {
+        if (player.in_possession) {
+            // player tiene la pelota: generar los pases/tiros
+            // en todas las direcciones posibles
+            for (int stepSize = 1; stepSize < rows/2; ++stepSize) {
+                for (int direccionTiro = 0; direccionTiro < movesSize; ++direccionTiro) {
+                    nextMoves.push_back(player_move(player.id, PASE, direccionTiro, stepSize));
+                }
+            }
+        }
+    }
 
-    // TODO: si alguno tiene la pelota, genera todos los pases/tiros
-    // posibles
 }
