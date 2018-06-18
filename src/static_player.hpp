@@ -46,7 +46,7 @@ public:
 		}
 
 		for (int i = 0; i < 3; i++) {
-			positions.emplace_back(i, i, column, false);
+			positions.emplace_back(i, i, column, this->players[i].probability, false);
 		}
 	}
 
