@@ -117,8 +117,8 @@ void GreedyPlayer::setOponentMoves(const board_status& current_board, std::vecto
  * Genera todos los movimientos posibles a partir del estado
  * actual del equipo.
  */
-std::vector<player_move> GreedyPlayer::generateMoves(const board_status& current_board) {
-    std::vector<player_move> nextMoves;
+std::vector<std::vector<player_move>> GreedyPlayer::generateMoves(const board_status& current_board) {
+    std::vector<std::vector<player_move>> nextMoves;
 
     // genera todas las combinaciones de desplazamientos
     // por el tablero
@@ -126,22 +126,30 @@ std::vector<player_move> GreedyPlayer::generateMoves(const board_status& current
     for (int d1 = 0; d1 < movesSize; ++d1) {
         for (int d2 = 0; d2 < movesSize; ++d2) {
             for (int d3 = 0; d3 < movesSize; ++d3) {
-                nextMoves.push_back(player_move(0, MOVIMIENTO, d1));
-                nextMoves.push_back(player_move(1, MOVIMIENTO, d2));
-                nextMoves.push_back(player_move(2, MOVIMIENTO, d3));
-            }
-        }
-    }
-    for (const player_status& player: current_board.team) {
-        if (player.in_possession) {
-            // player tiene la pelota: generar los pases/tiros
-            // en todas las direcciones posibles
-            for (int stepSize = 1; stepSize < rows/2; ++stepSize) {
-                for (int direccionTiro = 0; direccionTiro < movesSize; ++direccionTiro) {
-                    nextMoves.push_back(player_move(player.id, PASE, direccionTiro, stepSize));
-                }
+                std::vector<player_move> currentTeamMove;
+                currentTeamMove.push_back(player_move(0, MOVIMIENTO, d1));
+                currentTeamMove.push_back(player_move(1, MOVIMIENTO, d2));
+                currentTeamMove.push_back(player_move(2, MOVIMIENTO, d3));
+                nextMoves.push_back(currentTeamMove);
             }
         }
     }
 
+    // TODO: arreglar esta logica para armar jugadas de la forma 1 pase + dos desplazamientos
+    // for (const player_status& player: current_board.team) {
+    //     if (player.in_possession) {
+    //         // player tiene la pelota: generar los pases/tiros
+    //         // en todas las direcciones posibles
+    //         for (int stepSize = 1; stepSize < rows/2; ++stepSize) {
+    //             std::vector<player_move> currentTeamMove;
+    //             for (int direccionTiro = 0; direccionTiro < movesSize; ++direccionTiro) {
+
+    //                 nextMoves.push_back(player_move(player.id, PASE, direccionTiro, stepSize));
+    //                 nextMoves.push_back(currentTeamMove);
+
+    //             }
+    //         }
+    //     }
+    // }
+    return nextMoves;
 }
