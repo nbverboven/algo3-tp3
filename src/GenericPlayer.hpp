@@ -122,6 +122,8 @@ public:
 	 * va a tener menos puntos cuando mas se acerque )
 	 */
 	double EvaluateBoard(const board_status& board){
+
+		double maxDistance = sqrt(pow(this->columns, 2) + pow(this->rows, 2));
 		double boardPoints = 0;
 
 		double dist;
@@ -138,6 +140,8 @@ public:
 			std::pair<int,int> playerPoss(p.i, p.j);
 
 			dist = distance(ballPoss, playerPoss);
+			dist = (maxDistance - dist) / maxDistance;
+			std::cerr << dist << std::endl;
 			boardPoints += dist*(this->_genome).ball_distance; //Notar que si tiene la pelota es 0;
 
 			if(p.in_possession){
@@ -149,6 +153,8 @@ public:
 						mejor_dist = dist;
 					}
 				}
+				mejor_dist = (maxDistance - mejor_dist) / maxDistance;
+				std::cerr << mejor_dist << std::endl;
 				boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
 
 			}else{
