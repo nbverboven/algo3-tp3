@@ -169,7 +169,7 @@ public:
 			}else{
 				//Evaluo el equipo contrario
 				for (const player_status& op : board.oponent_team) {
-					if(p.in_possession){
+					if(op.in_possession){
 						std::pair<int,int> opPlayerPoss(op.i, op.j);
 
 						dist = distance(opPlayerPoss, playerPoss);
