@@ -2,6 +2,7 @@
 #include <iostream>
 #include "board_status.hpp"
 #include "constants.hpp"
+#include <iostream>
 
 GreedyPlayer::GreedyPlayer(
     int columns,
@@ -20,6 +21,7 @@ GreedyPlayer::GreedyPlayer(
         this->team = B;
         this->logicalBoard = LogicalBoard(columns, rows, oponent_players, players);
     }
+
 }
 
 GreedyPlayer::~GreedyPlayer(){}
