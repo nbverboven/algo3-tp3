@@ -12,7 +12,7 @@
 #define GENERIC_PLAYER
 
 
-/** 
+/**
  * Estructura para representar los pesos que se le asignan
  * a las características evaluadas para puntuar un tablero
 */
@@ -30,7 +30,7 @@ struct genome
 	       double ball_free,
 	       double goal_distance,
 	       double ball_distance,
-	       double oponent_with_ball_distance) 
+	       double oponent_with_ball_distance)
     : ball_possession(ball_possession),
       ball_in_oponent_possession(ball_in_oponent_possession),
       ball_free(ball_free),
@@ -80,6 +80,7 @@ public:
 		this->players = players;
 		this->oponent_players = oponent_players;
 		this->_genome = weights;
+		this->logicalBoard = LogicalBoard(columns, rows, players, oponent_players);
 	}
 
 	void starting_positions(std::vector<player_status>& positions) {
@@ -142,10 +143,11 @@ public:
 			if(p.in_possession){
 
 				int mejor_dist = -1;
-				for(std::pair<int,int>t : goalPoss){
+				for(std::pair<int,int> t : goalPoss) {
 					dist = distance(t, playerPoss);
-					if(mejor_dist == -1 || dist < mejor_dist)
+					if(mejor_dist == -1 || dist < mejor_dist) {
 						mejor_dist = dist;
+					}
 				}
 				boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
 
