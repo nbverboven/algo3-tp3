@@ -1,5 +1,5 @@
 #include "LogicalBoard.h"
-#include "static_player.hpp"
+#include "GenericPlayer.hpp"
 
 #ifndef REFEREE_H
 #define REFEREE_H
@@ -13,7 +13,7 @@ public:
      * Constructor.
      */
     Referee(int columns, int rows, int steps,
-        static_player& team_A, static_player &team_B
+        GenericPlayer& team_A, GenericPlayer &team_B
     );
 
     /**
@@ -42,8 +42,8 @@ private:
     std::vector<std::pair<int, int>> getInitialPositionsB();
 
     LogicalBoard logicalBoard_;
-    static_player& team_A_;
-    static_player& team_B_;
+    GenericPlayer& team_A_;
+    GenericPlayer& team_B_;
     int steps_;
 };
 
