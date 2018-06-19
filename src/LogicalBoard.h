@@ -121,6 +121,11 @@ public:
 	 */
 	bool isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves);
 
+	/**
+	 * Devuelve la cantidad de goles que metió el equipo
+	 */
+	unsigned int getTeamScore(std::string team);
+
 	friend std::ostream& operator<<(std::ostream &os, const LogicalBoard &lb);
 
 private:
