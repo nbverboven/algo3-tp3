@@ -62,7 +62,7 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
     }
 
     // obtengo los puntos del estado actual
-    int maxScore = this->EvaluateBoard(original_board);
+    double maxScore = this->EvaluateBoard(original_board);
 
     // obtengo la lista de movimientos posibles a ejecutar
     std::vector<std::vector<player_move>> potentialMoves = this->generateMoves(current_board);
@@ -80,7 +80,7 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
             }
 
             // obtengo el puntaje en el estado resultante de haber ejecutado la jugada
-            int currentScore = this->EvaluateBoard(this->logicalBoard.getState());
+            double currentScore = this->EvaluateBoard(this->logicalBoard.getState());
 
             if (currentScore > maxScore) {
                 // si esta jugada me dio mejor puntaje que la ultima,

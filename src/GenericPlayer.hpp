@@ -121,16 +121,16 @@ public:
 	 * ( Ej: Si el jugador tiene la pelota y se esta acercando al arco
 	 * va a tener menos puntos cuando mas se acerque )
 	 */
-	int EvaluateBoard(const board_status& board){
-		int boardPoints = 0;
+	double EvaluateBoard(const board_status& board){
+		double boardPoints = 0;
 
-		int dist,points;
+		double dist;
 		bool inPossession = false;
 		std::pair<int,int> ballPoss(board.ball.i, board.ball.j);
-		std::vector<std::pair<int, int>>  goalPoss = this->logicalBoard.getGoal(this->team);
+		std::vector<std::pair<int, int>> goalPoss = this->logicalBoard.getGoal(this->team);
 
 		std::string opTeam = (this->team==A)?B:A;
-		std::vector<std::pair<int, int>>  oponentGoalPoss = this->logicalBoard.getGoal(opTeam);
+		std::vector<std::pair<int, int>> oponentGoalPoss = this->logicalBoard.getGoal(opTeam);
 
 		//Evaluo mi equipo
 		for (const player_status& p : board.team) {
@@ -142,7 +142,7 @@ public:
 
 			if(p.in_possession){
 
-				int mejor_dist = -1;
+				double mejor_dist = -1;
 				for(std::pair<int,int> t : goalPoss) {
 					dist = distance(t, playerPoss);
 					if(mejor_dist == -1 || dist < mejor_dist) {
