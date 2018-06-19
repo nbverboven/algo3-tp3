@@ -23,28 +23,39 @@ struct genome
 	           ball_free(-0.1),
 	           goal_distance(-0.4),
 	           ball_distance(0.46),
-	           oponent_with_ball_distance(-0.5) {}
+	           oponent_with_ball_distance(-0.5),
+	           dispersion(0.1),
+	           distance_ball_oponent_goal(0.1),
+	           distance_ball_our_goal(0.1) {}
 
 	genome(double ball_possession,
 	       double ball_in_oponent_possession,
 	       double ball_free,
 	       double goal_distance,
 	       double ball_distance,
-	       double oponent_with_ball_distance)
+	       double oponent_with_ball_distance,
+	       double dispersion,
+	       double distance_ball_oponent_goal,
+	       double distance_ball_our_goal)
     : ball_possession(ball_possession),
       ball_in_oponent_possession(ball_in_oponent_possession),
       ball_free(ball_free),
       goal_distance(goal_distance),
       ball_distance(ball_distance),
-      oponent_with_ball_distance(oponent_with_ball_distance) {}
+      oponent_with_ball_distance(oponent_with_ball_distance),
+      dispersion(dispersion),
+      distance_ball_oponent_goal(distance_ball_oponent_goal),
+      distance_ball_our_goal(distance_ball_our_goal) {}
 
     double ball_possession;
     double ball_in_oponent_possession;
     double ball_free;
-
     double goal_distance;
     double ball_distance;
     double oponent_with_ball_distance;
+    double dispersion;
+    double distance_ball_oponent_goal;
+    double distance_ball_our_goal;
 };
 
 
@@ -141,7 +152,6 @@ public:
 
 			dist = distance(ballPoss, playerPoss);
 			dist = (maxDistance - dist) / maxDistance;
-			std::cerr << dist << std::endl;
 			boardPoints += dist*(this->_genome).ball_distance; //Notar que si tiene la pelota es 0;
 
 			if(p.in_possession){
@@ -154,7 +164,6 @@ public:
 					}
 				}
 				mejor_dist = (maxDistance - mejor_dist) / maxDistance;
-				std::cerr << mejor_dist << std::endl;
 				boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
 
 			}else{
@@ -179,9 +188,55 @@ public:
 			boardPoints += (this->_genome).ball_in_oponent_possession;
 		}
 
+		// agrego la dispersion como parametro
+		double dispersion = 0;
+		int myTeamSize = 3;
+		for (int i = 0; i < 3; ++i) {
+			const player_status& p1 = board.team[i];
+			std::pair<int, int> p1Poss(p1.i, p1.j);
+			for (int j = i+1; j<3; ++j) {
+				const player_status& p2 = board.team[j];
+				std::pair<int, int> p2Poss(p2.i, p2.j);
+				dispersion += distance(p1Poss, p2Poss);
+			}
+		}
+		dispersion = dispersion / (3*maxDistance);
+
+		boardPoints += (this->_genome).dispersion * dispersion;
+
+		// agrego la distancia de la pelota al arco rival (si la tenemos nosotros)
+		bool ourBall = false;
+		for (const player_status& p: board.team) {
+			if (p.in_possession) {
+				ourBall = true;
+			}
+		}
+		if (ourBall) {
+			double ballDistanceToRivalGoal = 0;
+			ballDistanceToRivalGoal = distance(ballPoss, oponentGoalPoss[0]);
+			ballDistanceToRivalGoal = std::min(ballDistanceToRivalGoal, distance(ballPoss, oponentGoalPoss[1]));
+			ballDistanceToRivalGoal = std::min(ballDistanceToRivalGoal, distance(ballPoss, oponentGoalPoss[2]));
+			ballDistanceToRivalGoal = (maxDistance - ballDistanceToRivalGoal) / maxDistance;
+			boardPoints += this->_genome.distance_ball_oponent_goal * ballDistanceToRivalGoal;
+		}
+
+		// agrego la distancia de la pelota al arco propio (si la tenemos nosotros)
+		bool theirBall = false;
+		for (const player_status& p: board.oponent_team) {
+			if (p.in_possession) {
+				theirBall = true;
+			}
+		}
+		if (theirBall) {
+			double ballDistanceToOurGoal = 0;
+			ballDistanceToOurGoal = distance(ballPoss, goalPoss[0]);
+			ballDistanceToOurGoal = std::min(ballDistanceToOurGoal, distance(ballPoss, goalPoss[1]));
+			ballDistanceToOurGoal = std::min(ballDistanceToOurGoal, distance(ballPoss, goalPoss[2]));
+			ballDistanceToOurGoal = (maxDistance - ballDistanceToOurGoal) / maxDistance;
+			boardPoints += this->_genome.distance_ball_our_goal * ballDistanceToOurGoal;
+		}
 		return boardPoints;
 	}
-
 };
 
 #endif
