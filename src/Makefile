@@ -1,4 +1,4 @@
-greedy_player: GreedyPlayer.cpp LogicalBoard.cpp Util.cpp main.cpp
+greedy_player: GreedyPlayer.cpp GenericPlayer.hpp LogicalBoard.cpp Util.cpp main.cpp
 	g++ -ggdb -std=c++11 GreedyPlayer.cpp -c
 	g++ -ggdb -std=c++11 LogicalBoard.cpp -c
 	g++ -ggdb -std=c++11 Util.cpp -c
