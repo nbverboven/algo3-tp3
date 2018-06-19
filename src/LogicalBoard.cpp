@@ -470,6 +470,7 @@ ball_status LogicalBoard::getBall()
 }
 
 bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const std::vector<player_move>& moves){
+
 	bool ret = true;
 	std::vector<player_status> players;
 	std::vector<player_move> player_moves(3);
@@ -486,6 +487,7 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 	assert(moves.size() == 3);
 	assert(player_moves.size() == 3);
 	assert(team.size() == 3);
+
 	ret = ret && moves.size() == player_moves.size();	//son los mismos (nadie se movio 2 veces)
 	ret = ret && team.size() == player_moves.size();	//un movimiento por jugador
 
@@ -507,7 +509,9 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 
 				ball.i = p.i;
 				ball.j = p.j;
-				ball.move(_move);
+				ball.dir = pm.dir;
+				ball.steps = pm.steps;
+				// ball.move(_move);
 				std::vector<std::pair<int,int> > ball_trajectory = ball.trajectory();
 
 				bool trajectoryValid = true;
@@ -526,6 +530,7 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 
 			players.push_back(p);
 			conj.insert(std::make_pair(p.i, p.j));
+
 		}
 
 		// Dos jugadores del mismo equipo estan en la misma posicion
