@@ -508,25 +508,29 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 				// Mirar que el pase es válido: O sea que termina adentro de la cancha, en algún
 				// arco o cruza un arco (ya que va de a dos pasos por vez).
 				// Además, no puede ser más largo que M / 2
-				ret = ret && _move.j <= this->_rows / 2;
-
+				ret = ret && (pm.steps <= this->_rows / 2);
 				ball.i = p.i;
 				ball.j = p.j;
 				ball.dir = pm.dir;
 				ball.steps = pm.steps;
+
 				// ball.move(_move);
-				std::vector<std::pair<int,int> > ball_trajectory = ball.trajectory();
+				std::vector<std::pair<int,int>> ball_trajectory = ball.trajectory();
 
 				bool trajectoryValid = true;
 				bool trajectoryInGoal = false;
-				for(std::pair<int,int> par : ball_trajectory){
-					std::pair<int, int> poss(p.i,p.j);
-					for(std::pair<int, int> t : this->_goal_A)
+				// para cada posicion de la trayectoria, verifico
+				// si esta adentro del arco o adentro de la cancha
+				for(std::pair<int,int> par : ball_trajectory) {
+					std::pair<int, int> poss(par.first, par.second);
+					for(std::pair<int, int> t : this->_goal_A) {
 					 	trajectoryInGoal = trajectoryInGoal || poss==t;
-					for(std::pair<int, int> t : this->_goal_B)
+					}
+					for(std::pair<int, int> t : this->_goal_B) {
 					 	trajectoryInGoal = trajectoryInGoal || poss==t;
-					//La trajectoria debe estar en el tablero o en un arco.
-					trajectoryValid = trajectoryInGoal || this->positionInBoard(p.i, p.j);
+					}
+					// La trayectoria debe estar en el tablero o en un arco.
+					trajectoryValid = trajectoryInGoal || this->positionInBoard(par.first, par.second);
 				}
 				ret = ret && trajectoryValid;
 			}

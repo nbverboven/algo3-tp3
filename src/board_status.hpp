@@ -110,8 +110,10 @@ struct ball_status {
 	std::vector<std::pair<int,int> > trajectory() {
 		struct move m(MOVES[dir]);
 		std::vector<std::pair<int,int> > ret;
-		for(int k=0; k < steps; k++){
-			ret.push_back( {i + 2*k*m.i, j + 2*k*m.j} );
+		int actualSteps = 2*steps;
+		// este <= en el for esta a proposito!!!1
+		for(int k=0; k <= actualSteps; k++) {
+			ret.push_back({this->i + k*m.i, this->j + k*m.j});
 		}
 		return ret;
 	}
