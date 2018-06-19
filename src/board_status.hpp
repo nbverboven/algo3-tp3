@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "constants.hpp"
+#include <iostream>
 
 struct player {
 	int id;
@@ -110,7 +111,7 @@ struct ball_status {
 		struct move m(MOVES[dir]);
 		std::vector<std::pair<int,int> > ret;
 		for(int k=0; k < steps; k++){
-			ret.push_back( {i + i*m.i, j + j*m.j} );
+			ret.push_back( {i + 2*k*m.i, j + 2*k*m.j} );
 		}
 		return ret;
 	}
