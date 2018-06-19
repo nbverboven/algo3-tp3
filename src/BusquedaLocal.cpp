@@ -1,8 +1,78 @@
-#include "Referee.h"
-#include "GreedyPlayer.hpp"
+// #include "Referee.h"
+// #include "GreedyPlayer.h"
+// #include "GenericPlayer.hpp"
+#include <vector>
+#include <fstream>
+
+#define COLUMNS 10
+#define ROWS 5
+#define STEPS 50
 
 #define GAMES_TO_PLAY 20
 #define MAX_NUMBER_OF_SEARCHS 100
+#define CONVERGENCE_CRITERION 7
+ 
+/**
+ * Genera el producto cartesiano entre todos los items de todos
+ * los vectores de vectores.
+ */
+std::vector<std::vector<double>> cart_product(std::vector<std::vector<double>>& v)
+{
+    std::vector<std::vector<double>> s = {{}};
+    for (auto& u : v) {
+        std::vector<std::vector<double>> r;
+        for (auto& x : s) {
+            for (auto y : u) {
+                r.push_back(x);
+                r.back().push_back(y);
+            }
+        }
+        s.swap(r);
+    }
+    return s;
+}
+
+
+/**
+ * Dado un genoma, devuelve una matriz cuyas filas corresponden 
+ * a sus vecinos
+ */
+std::vector<std::vector<double>> getNeighborhood(genome &g) 
+{
+    std::vector<std::vector<double>> elInput;
+
+    for (double gene_value : g.genic_values) {
+
+    	/* Chequeo los casos borde para que los valores resultantes
+    	   no salgan del rango [0, 1] */
+    	if (gene_value == -1) {
+    		elInput.push_back({gene_value, gene_value+0.1});
+    	}
+    	else if (gene_value == 1) {
+    		elInput.push_back({gene_value-0.1, gene_value});	
+    	}
+    	else {
+		    elInput.push_back({gene_value-0.1, gene_value, gene_value+0.1});
+    	}
+    }
+  
+    return cart_product(elInput);
+}
+
+
+std::pair<genome, int> maximum(std::vector<std::pair<genome, int>> &v) {
+	unsigned int max_index = 0;
+	int i = 1;
+	while (i < v.size()) {
+		if (v[i].second > v[max_index].second) {
+			max_index = i;
+		}
+		++i;
+	}
+
+	return v[max_index];
+}
+
 
 int main()
 {
@@ -14,32 +84,36 @@ int main()
 		opponents.push_back(player(i, 0.5));
 	}
 
-	int columns = 10;
-	int rows = 5;
-	int steps = 50;
+	int columns = COLUMNS;
+	int rows = ROWS;
+	int steps = STEPS;
 
-	/* La idea es guardar los parámetros usados, y cuántos partidos
-	   ganó mi equipo para esos valores */
-	std::vector<std::pair<genome, int>> game_results;
-	genome current_genome(); //Con algunos valores iniciales
+	// Creo un genoma con valores por defecto
+	genome current_genome;
 
-	// Contadores de partidos ganados
-	int number_of_local_maxima_found = 0;
+	// Contadores varios
+	int neighborhoods_visited = 0;
 	int consecutive_equal_maxima_found = 0;
-	int last_maximum = 0;
+	int previous_maximum = 0;
 
-	/* Si k1, k2,..., kn son los genes, dado un genoma en particular definimos
-	   su vecindad como un entorno de 0,1 alrededor de cada ki, 1<=i<=n */
-	// Mientras no haya llegado a las 200 (!!) búsquedas
-	// o no converja la cantidad de partidos ganados
-	{
+	std::ofstream log_file;
+	log_file.open("log/local_search.log");
+
+	while (neighborhoods_visited < MAX_NUMBER_OF_SEARCHS && 
+		   consecutive_equal_maxima_found < CONVERGENCE_CRITERION) {
+
 		GreedyPlayer GreedyPlayer(columns, rows, steps, IZQUIERDA, players, opponents, current_genome);
-		// vecindad_del_genoma_actual <- obtenerVecindad(current_genome)
 
-		// Busco en la vecindad
-		// for (elem in vecindad) do
+		/* La idea es guardar los parámetros usados, y cuántos partidos
+		   ganó mi equipo para esos valores */
+		std::vector<std::pair<genome, int>> game_results;
+
+		/* Obtengo el vecindario del current_genome y lo recorro
+		   exhaustivamente buscando algún genoma que mejore el mío */
+		std::vector<std::vector<double>> current_neighborhood = getNeighborhood(current_genome);
+		for (std::vector<double> neighbor : current_neighborhood)
 		{
-			genome test_genome; // Sus valores dependerán del vecino en cuestión
+			genome test_genome(neighbor); // Sus valores dependerán del vecino en cuestión
 			GreedyPlayer GreedyPlayer(columns, rows, steps, DERECHA, opponents, players, test_genome);
 	
 			// Voy a asumir que mi equipo es el A
@@ -52,7 +126,6 @@ int main()
 				Referee ref(columns, rows, steps, moronic_p, static_p);
 				std::string the_winner = ref.runPlay(A);
 				
-				// Registro quién ganó
 				if (the_winner == A) {
 					++games_won_by_my_team;
 				}
@@ -61,39 +134,34 @@ int main()
 				}
 			}
 	
-			// Agrego el genoma más ganador a la lista de resultados
-			if (games_won_by_my_team >= games_won_by_opponent) {
-				game_results.push_back(std::make_pair(current_genome, games_won_by_my_team));
-			}
-			else {
+			// Agrego los genomas más ganadores que el mío a la lista de resultados
+			if (games_won_by_my_team <= games_won_by_opponent) {
 				game_results.push_back(std::make_pair(test_genome, games_won_by_opponent));
 			}
 		}
-		// end for
-		// fin busco en la vecindad
 
-		/* Busco la primera combinación de parámetros que haya ganado la 
+		/* Busco la combinación de parámetros que me haya ganado la 
 		   mayor cantidad de partidos*/
-		int i = 0;
-		while (game_results[i].second != last_maximum) {
-			++i;
-		}
-		std::pair<genome, int> best_local_result = game_results[i];
-
+		std::pair<genome, int> best_local_result = maximum(game_results);
 		current_genome = best_local_result.first;
 		int max_local_games_won = best_local_result.second;
 
 		// Veo si puedo estar convergiendo en un máximo local
-		if (max_local_games_won == last_maximum) {
+		if (max_local_games_won == previous_maximum) {
 			++consecutive_equal_maxima_found;
 		}
 		// Veo si encontré un nuevo máximo
-		else if (max_local_games_won > last_maximum) {
+		else if (max_local_games_won > previous_maximum) {
 			consecutive_equal_maxima_found = 0;
-			last_maximum = max_local_games_won;
+			previous_maximum = max_local_games_won;
 		}
+
+		++neighborhoods_visited;
+
+		log_file << 
 	}
-	// fin mientras
+
+	close(log_file);
 
 	return 0;
 }
