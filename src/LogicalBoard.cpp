@@ -159,7 +159,7 @@ bool LogicalBoard::intercepted(const player_status &curr_state_player, std::stri
 
 	// Buscar el estado anterior del jugador
 	player_status prev_state_player;
-	std::vector<player_status> players = (team == A) ? this->_team_A : this->_team_B;
+	std::vector<player_status> players = (team == A) ? (this->_last_state).team : (this->_last_state).oponent_team;
 
 	for (player_status &p : players)
 	{
