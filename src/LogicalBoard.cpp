@@ -113,6 +113,9 @@ void LogicalBoard::makeTeamMove(std::vector<player_status> &team, std::vector<pl
 			(this->_ball).dir = movim.dir;
 			(this->_ball).steps = movim.steps;
 			p.in_possession = false;
+
+			// La pelota realiza un movimiento
+			(this->_ball).move(MOVES[movim.dir]);
 		}
 	}
 }
