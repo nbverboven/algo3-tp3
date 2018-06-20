@@ -146,9 +146,21 @@ std::vector<std::vector<player_move>> GreedyPlayer::generateMoves(const board_st
                     for (int d1 = 0; d1 < movesSize; ++d1) {
                         for (int d2 = 0; d2 < movesSize; ++d2) {
                             std::vector<player_move> currentTeamMove;
-                            currentTeamMove.push_back(player_move(player.id, PASE, direccionTiro, stepSize));
-                            currentTeamMove.push_back(player_move(freePlayers[0], MOVIMIENTO, d1));
-                            currentTeamMove.push_back(player_move(freePlayers[1], MOVIMIENTO, d2));
+                            // esta logica extra es para generar los movimientos posibles en orden ascendiente
+                            // por los ids de los jugadores
+                            if (player.id == 0) {
+                                currentTeamMove.push_back(player_move(0, PASE, direccionTiro, stepSize));
+                                currentTeamMove.push_back(player_move(1, MOVIMIENTO, d1));
+                                currentTeamMove.push_back(player_move(2, MOVIMIENTO, d2));
+                            } else if (player.id == 1) {
+                                currentTeamMove.push_back(player_move(0, MOVIMIENTO, d1));
+                                currentTeamMove.push_back(player_move(1, PASE, direccionTiro, stepSize));
+                                currentTeamMove.push_back(player_move(2, MOVIMIENTO, d2));
+                            } else if (player.id == 2) {
+                                currentTeamMove.push_back(player_move(0, MOVIMIENTO, d1));
+                                currentTeamMove.push_back(player_move(1, MOVIMIENTO, d2));
+                                currentTeamMove.push_back(player_move(2, PASE, direccionTiro, stepSize));
+                            }
                             nextMoves.push_back(currentTeamMove);
                         }
                     }
