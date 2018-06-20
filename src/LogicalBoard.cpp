@@ -31,12 +31,21 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &tea
 	}
 }
 
-void LogicalBoard::updateBoard(const board_status& board)
+void LogicalBoard::updateBoard(const board_status& board, std::string team)
 {
 	this->_ball = board.ball;
 
-	std::vector<player_status> _team_old = this->_team_A;
-	std::vector<player_status> _oponent_team_old = this->_team_B;
+    //El tablero no sabe si es el equipo A o B ..
+    std::vector<player_status> _team_old;
+    std::vector<player_status> _oponent_team_old;
+
+	if (team == A) {
+		_team_old = this->_team_A;
+		_oponent_team_old = this->_team_B;
+	} else {
+		_oponent_team_old = this->_team_A;
+		_team_old = this->_team_B;
+	}
 
 	std::vector<player_status> _team;
 	std::vector<player_status> _oponent_team;
@@ -67,8 +76,14 @@ void LogicalBoard::updateBoard(const board_status& board)
 		_oponent_team.push_back(jg);
 	}
 
-	this->_team_A = _team;
-	this->_team_B = _oponent_team;
+	if (team == A) {
+		this->_team_A = _team;
+		this->_team_B = _oponent_team;
+	} else {
+		this->_team_A = _oponent_team;
+		this->_team_B = _team;
+	}
+
 }
 
 // Asumo que moves está indexado por el id de los jugadores de team
@@ -498,8 +513,8 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 				ball.j = p.j;
 				ball.dir = pm.dir;
 				ball.steps = pm.steps;
+				ball.move(_move);
 
-				// ball.move(_move);
 				std::vector<std::pair<int,int>> ball_trajectory = ball.trajectory();
 
 				bool trajectoryValid = true;
