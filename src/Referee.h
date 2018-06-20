@@ -27,6 +27,11 @@ public:
      */
     std::string runPlay(std::string startingTeam);
 
+	/**
+	 * Devuelve la cantidad de goles que metió el equipo
+	 */
+	unsigned int getTeamScore(std::string team);
+
 private:
 
     /**

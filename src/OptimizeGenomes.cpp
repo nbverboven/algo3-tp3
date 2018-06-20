@@ -1,6 +1,7 @@
 #include <vector>
 #include <fstream>
-//#include "constants.hpp"
+#include "constants.hpp"
+#include "Util.h"
 #include "Referee.h"
 #include "GreedyPlayer.h"
 
@@ -10,7 +11,7 @@
 
 //#define CONVERGENCE_CRITERION 7
 #define INITIAL_POPULATION 10   //Población inicial de la población de genomas
-#define GAMES_TO_PLAY 10        //Partidos a jugar
+#define GAMES_TO_PLAY 5        //Partidos a jugar
 
 std::random_device _rd;
 std::mt19937 _generator(_rd());
@@ -43,7 +44,7 @@ void log(std::ofstream &f, genome g){
  * Función de fitness, evalúa el genoma
  */
 genome_fitness EvaluarGenoma(const genome& g, const std::vector<genome> &population){
-    genome_fitness fitness;
+    genome_fitness genomeFitness;
 
     std::vector<player> players;
     std::vector<player> opponents;
@@ -62,11 +63,27 @@ genome_fitness EvaluarGenoma(const genome& g, const std::vector<genome> &populat
     for(int i=0; i<population.size(); i++){
         genome opponentGenomes = population[i];
         GreedyPlayer opponentTeam(columns, rows, steps, DERECHA, opponents, players, opponentGenomes);
-        //Jugar Partido..
+
+        /* Pongo a los dos equipos a jugar una cantidad de partidos y 
+			registro cuántos ganó cada uno */
+        for (int l = 0; l < GAMES_TO_PLAY; l++) {
+            Referee ref(COLUMNS, ROWS, STEPS, myTeam, opponentTeam);
+            std::string the_winner = ref.runPlay(A);
+
+            genomeFitness.games_played++;
+            genomeFitness.goals += ref.getTeamScore(A);
+            genomeFitness.oponent_goals += ref.getTeamScore(B);
+            if (the_winner == A) {
+                genomeFitness.games_won++;
+            } else {
+                genomeFitness.games_lost++;
+            }
+        }
+
     }
     
 
-    return fitness;
+    return genomeFitness;
 }
 
 /**
@@ -93,7 +110,7 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
     bool cumpleCriterio = false;
 
     criterioTerminacionEnIteraciones++;
-    if(criterioTerminacionEnIteraciones > 5 )
+    if(criterioTerminacionEnIteraciones > 1 )
         cumpleCriterio = true;
 
     return cumpleCriterio;
