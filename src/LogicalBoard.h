@@ -30,7 +30,7 @@ public:
 	/**
 	 * Modifica los equipos y la pelota a la nueva instancia
 	 */
-	void updateBoard(const board_status& board);
+	void updateBoard(const board_status& board, std::string team);
 
 	/**
 	 * Realiza los movimientos de un equipo

@@ -34,7 +34,7 @@ static std::uniform_int_distribution<int> uid(0,8); // random dice
 void GreedyPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){
 
     //Update del tablero lógico con los ultimos movimientos
-    this->logicalBoard.updateBoard(current_board);
+    this->logicalBoard.updateBoard(current_board, this->team);
 
     //Acá voy a utilizar el tablero lógico para ver que los movimientos sean correctos y validos
     //También mi función de evaluar tablero, para saber si me sirve el movimiento
@@ -72,7 +72,11 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
         if(this->logicalBoard.isValidTeamMove(original_board.team, currentMoves)) {
             // si es una jugada valida, la ejecuto y calculo el puntaje
             // del tablero resultante
-            this->logicalBoard.makeMove(currentMoves, oponent_moves);
+            if (this->team == A) {
+                this->logicalBoard.makeMove(currentMoves, oponent_moves);
+            } else {
+                this->logicalBoard.makeMove(oponent_moves, currentMoves);
+            }
 
             // obtengo el puntaje en el estado resultante de haber ejecutado la jugada
             double currentScore = this->EvaluateBoard(this->logicalBoard.getState());
