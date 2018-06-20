@@ -81,7 +81,9 @@ std::pair<genome, int> maximum(std::vector<std::pair<genome, int>> &v) {
 	return v[max_index];
 }
 
-
+/**
+ * Para imprimir en el log
+ */
 std::ostream& operator<<(std::ostream &os, const genome &g) {
 	os << '[';
 	for (unsigned int i = 0; i < g.genic_values.size(); ++i) {
@@ -95,7 +97,9 @@ std::ostream& operator<<(std::ostream &os, const genome &g) {
 	return os;
 }
 
-
+/**
+ * Para debugear
+ */
 std::ostream& operator<<(std::ostream &os, const std::vector<std::vector<double>> &v) {
 	os << '[';
 	for (unsigned int i = 0; i < v.size(); ++i) {
