@@ -11,34 +11,6 @@
 #ifndef GENERIC_PLAYER
 #define GENERIC_PLAYER
 
-
-/**
- * Estructura para representar los pesos que se le asignan
- * a las características evaluadas para puntuar un tablero
-*/
-struct genome
-{
-	genome() {}
-	genome(const std::vector<double> &v) : genic_values(v) {}
-
-    /**
-     * Caracteres evaluados por cada gen:
-     * genes[0]-> Mi equipo está en posesión de la pelota
-     * genes[1]-> La pelota está en posesión del equipo contrario
-     * genes[2]-> La pelota está libre en el campo (ie, no la tiene ningún jugador)
-     * genes[3]-> Si alguno de mis jugadores tiene la pelota, la distancia entre este
-     *            y el arco rival
-     * genes[4]-> La distancia entre los jugadores de mi equipo y la pelota
-     * genes[5]-> La distancia entre mis jugadores y el jugador del equipo contrario
-     *            en posesión de la pelota
-     * genes[6]-> La distancia entre mis jugadores (dispersión)
-     * genes[7]-> La distancia entre la pelota y el arco rival
-     * genes[8]-> La distancia entre la pelota y mi arco
-     */
-    std::vector<double> genic_values = {1, -1, -0.1, -0.4, 0.46, -0.5, 1.0, -1.0};
-};
-
-
 class GenericPlayer
 {
 protected:
