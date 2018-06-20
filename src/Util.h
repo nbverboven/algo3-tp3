@@ -38,6 +38,11 @@ struct genome_fitness {
     int games_lost = 0;
     int goals = 0;
     int opponent_goals = 0;
+
+    bool operator>(const genome_fitness& other){
+        //TODO fijarse como compararlos BIEN
+        return games_won > other.games_won; 
+    }
 };
 
 /**

@@ -115,7 +115,7 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
  * Selecciona dos individuos de la población de manera aleatoria
  * y los elimina de la población (Para que no se vuelvan a seleccionar)
  */
-std::pair<genome,genome> SeleccionarIndividuos(std::vector<genome> &population){
+std::pair<genome,genome> SeleccionarIndividuosRandom(std::vector<genome> &population){
     std::uniform_int_distribution<int> uid(0,population.size()-1); // random dice
     
     int index = uid(_generator);
@@ -127,6 +127,39 @@ std::pair<genome,genome> SeleccionarIndividuos(std::vector<genome> &population){
     index = uid(_generator);
     genome indiv2 = population[index];
     population.erase(population.begin() + index);
+
+    return std::make_pair(indiv1, indiv2);
+}
+
+/**
+ * Selecciona dos individuos de la población de manera aleatoria
+ * y los elimina de la población (Para que no se vuelvan a seleccionar)
+ */
+std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &population, std::vector<genome_fitness> &populationFitness){
+    int bestFitness = (populationFitness[0]>populationFitness[1])?0:1;
+    int sndBestFitness = (populationFitness[0]>populationFitness[1])?1:0;;
+
+    for(int i=2; i<population.size(); i++){
+        if(populationFitness[i] > populationFitness[bestFitness]){
+            sndBestFitness = bestFitness;
+            bestFitness = i;
+        }else if(populationFitness[i] > populationFitness[sndBestFitness]){
+            sndBestFitness = i;
+        }
+    }
+
+    genome indiv1 = population[bestFitness];
+    genome indiv2 = population[sndBestFitness];
+
+    //Veo que indice es mayor (a<b)
+    int a = (bestFitness>sndBestFitness)?sndBestFitness:bestFitness;
+    int b = (bestFitness>sndBestFitness)?bestFitness:sndBestFitness;
+
+    //Borro los genomas seleccionados primero b, luego a 
+    population.erase(population.begin() + b);
+    populationFitness.erase(populationFitness.begin() + b);
+    population.erase(population.begin() + a);
+    populationFitness.erase(populationFitness.begin() + a);
 
     return std::make_pair(indiv1, indiv2);
 }
@@ -211,7 +244,7 @@ int main() {
             log_file << "Ciclo reproductivo nro " << i << std::endl;
             //Ciclo reproductivo
             //Selecciono dos individuos de la anterior generación.
-            std::pair<genome,genome> individuos = SeleccionarIndividuos(genomePopulation);
+            std::pair<genome,genome> individuos = SeleccionarIndividuosRandom(genomePopulation);
 
             //Cruzar (crossover) con cierta probabilidad los dos individuos obteniendo dos descendientes.
             genome descendiente = CruzarGenomesValues(std::get<0>(individuos), std::get<1>(individuos));
