@@ -56,6 +56,13 @@ std::string Referee::runPlay(std::string startingTeam) {
 }
 
 /**
+ * Devuelve la cantidad de goles que metió el equipo
+ */
+unsigned int Referee::getTeamScore(std::string team){
+    this->logicalBoard_.getTeamScore(team);
+}
+
+/**
  * Funcion auxiliar que devuelve las posiciones iniciales
  * del equipo A, formateadas como las espera LogicalBoard::reset.
  */
