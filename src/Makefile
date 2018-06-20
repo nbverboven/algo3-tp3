@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic -ggdb -std=c++11
-EXE = main busqueda_local #optimize_genomes
+EXE = greedy_player busqueda_local #optimize_genomes
 SRC = $(filter-out main.cpp BusquedaLocal.cpp OptimizeGenomes.cpp GraspPlayer.cpp, $(wildcard *.cpp))
 HEADERS = $(wildcard *.h, *hpp)
 OBJS = $(SRC:.cpp=.o)
@@ -9,7 +9,7 @@ OBJS = $(SRC:.cpp=.o)
 
 all: $(EXE)
 
-main: $(OBJS) $(HEADERS) main.cpp
+greedy_player: $(OBJS) $(HEADERS) main.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) main.cpp -o $@
 
 busqueda_local: $(OBJS) $(HEADERS) BusquedaLocal.cpp
