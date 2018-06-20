@@ -1,5 +1,6 @@
 #include <vector>
 #include <fstream>
+#include <ostream>
 #include "constants.hpp"
 #include "Util.h"
 #include "Referee.h"
@@ -16,36 +17,46 @@
 std::random_device _rd;
 std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
+std::ofstream log_file;
 
 struct genome_fitness {
     int games_played = 0;
     int games_won = 0;
     int games_lost = 0;
     int goals = 0;
-    int oponent_goals = 0;
+    int opponent_goals = 0;
 };
+
+std::ostream& operator<<(std::ostream &os, const genome_fitness& gf) {
+    os << "genome_fitness {" << std::endl;
+    os << "games_played: " << gf.games_played << std::endl;
+    os << "games_won: " << gf.games_won << std::endl;
+    os << "games_lost: " << gf.games_lost << std::endl;
+    os << "goals: " << gf.goals << std::endl;
+    os << "opponent_goals: " << gf.opponent_goals << std::endl;
+    os << "}" << std::endl;
+    return os;
+}
 
 /**
  * Loguea el genoma
  */
-void log(std::ofstream &f, genome g){
-    f << "ball_possession: " << g.genic_values[0] << std::endl;
-    f << "ball_in_oponent_possession: " << g.genic_values[1] << std::endl;
-    f << "ball_free: " << g.genic_values[2] << std::endl;
-    f << "goal_distance: " << g.genic_values[3] << std::endl;
-    f << "ball_distance: " << g.genic_values[4] << std::endl;
-    f << "oponent_with_ball_distance: " << g.genic_values[5] << std::endl;
-    f << "dispersion: " << g.genic_values[6] << std::endl;
-    f << "distance_ball_oponent_goal: " << g.genic_values[7] << std::endl;
-    f << "distance_ball_our_goal: " << g.genic_values[8] << std::endl;
+void log(genome g){
+    log_file << "ball_possession: " << g.genic_values[0] << std::endl;
+    log_file << "ball_in_oponent_possession: " << g.genic_values[1] << std::endl;
+    log_file << "ball_free: " << g.genic_values[2] << std::endl;
+    log_file << "goal_distance: " << g.genic_values[3] << std::endl;
+    log_file << "ball_distance: " << g.genic_values[4] << std::endl;
+    log_file << "oponent_with_ball_distance: " << g.genic_values[5] << std::endl;
+    log_file << "dispersion: " << g.genic_values[6] << std::endl;
+    log_file << "distance_ball_oponent_goal: " << g.genic_values[7] << std::endl;
+    log_file << "distance_ball_our_goal: " << g.genic_values[8] << std::endl;
 }
 
 /**
  * Función de fitness, evalúa el genoma
  */
-genome_fitness EvaluarGenoma(const genome& g, const std::vector<genome> &population){
-    genome_fitness genomeFitness;
-
+void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePoss, std::vector<genome_fitness>& populationFitness){
     std::vector<player> players;
     std::vector<player> opponents;
 	for (int i = 0; i < 3; ++i) {
@@ -53,51 +64,54 @@ genome_fitness EvaluarGenoma(const genome& g, const std::vector<genome> &populat
 		opponents.push_back(player(i, 0.5));
 	}
 
-	int columns = COLUMNS;
-	int rows = ROWS;
-	int steps = STEPS;
-
-    genome myGenomes = g;
-    GreedyPlayer myTeam(columns, rows, steps, IZQUIERDA, players, opponents, myGenomes);
+    GreedyPlayer myTeam(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, population[genomePoss]);
     
-    for(int i=0; i<population.size(); i++){
-        genome opponentGenomes = population[i];
-        GreedyPlayer opponentTeam(columns, rows, steps, DERECHA, opponents, players, opponentGenomes);
+    for(int oppGenomePoss=genomePoss+1; oppGenomePoss<population.size(); oppGenomePoss++){
+        log_file << "Partido contra genoma nro " << oppGenomePoss << std::endl;
+        GreedyPlayer opponentTeam(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, population[oppGenomePoss]);
 
         /* Pongo a los dos equipos a jugar una cantidad de partidos y 
-			registro cuántos ganó cada uno */
-        for (int l = 0; l < GAMES_TO_PLAY; l++) {
+            registro cuántos ganó cada uno */
+        for (int l=0; l < GAMES_TO_PLAY; l++) {
+            //std::cout<< "Partido nro " << l << std::endl;
             Referee ref(COLUMNS, ROWS, STEPS, myTeam, opponentTeam);
             std::string the_winner = ref.runPlay(A);
 
-            genomeFitness.games_played++;
-            genomeFitness.goals += ref.getTeamScore(A);
-            genomeFitness.oponent_goals += ref.getTeamScore(B);
+            populationFitness[genomePoss].games_played++;
+            populationFitness[oppGenomePoss].games_played++;
+            populationFitness[genomePoss].goals += ref.getTeamScore(A);
+            populationFitness[oppGenomePoss].goals += ref.getTeamScore(B);
+            populationFitness[genomePoss].opponent_goals += ref.getTeamScore(B);
+            populationFitness[oppGenomePoss].opponent_goals += ref.getTeamScore(A);
+
             if (the_winner == A) {
-                genomeFitness.games_won++;
+                populationFitness[genomePoss].games_won++;
+                populationFitness[oppGenomePoss].games_lost++;
             } else {
-                genomeFitness.games_lost++;
+                populationFitness[genomePoss].games_lost++;
+                populationFitness[oppGenomePoss].games_won++;
             }
         }
-
     }
-    
-
-    return genomeFitness;
 }
 
 /**
  * Evalúa todos los genomas de la población
  */
 std::vector<genome_fitness> EvaluarTodosGenomas(std::vector<genome>& population){
-    std::vector<genome_fitness> populationFitness(population.size());
-    for(int i=0; i<population.size(); i++) {
-        std::vector<genome> toCompare;
-        for(int l=0; l<population.size(); l++){
-            if(l!=i) toCompare.push_back(population[i]);
-        }
-        populationFitness[i] = EvaluarGenoma(population[i], toCompare);
+    log_file << "--- --- Evaluar todos los genomas --- ---" << std::endl;
+    std::vector<genome_fitness> populationFitness(population.size(), genome_fitness());
+
+    for(unsigned int i=0; i<population.size(); i++) {
+        log_file << "Evaluando genoma nro " << i << std::endl;
+        EvaluarGenoma(population, i,  populationFitness);
     }
+
+    log_file << "--- --- Resultado de los genomas --- ---" << std::endl;
+    for(auto gf : populationFitness){
+        log_file << gf;
+    }
+
     return populationFitness;
 }
 
@@ -158,7 +172,6 @@ int main() {
 	}
 
     //Inicializo el archivo de Log
-	std::ofstream log_file;
 	log_file.open("log/optimize_genomes.log");
 
     //Población inicial
