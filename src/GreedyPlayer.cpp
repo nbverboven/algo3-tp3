@@ -70,18 +70,12 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
     for(std::vector<player_move> currentMoves: potentialMoves) {
 
         if(this->logicalBoard.isValidTeamMove(original_board.team, currentMoves)) {
-
             // si es una jugada valida, la ejecuto y calculo el puntaje
             // del tablero resultante
-            if(this->team == A) {
-                this->logicalBoard.makeMove(currentMoves, oponent_moves);
-            }  else {
-                this->logicalBoard.makeMove(oponent_moves, currentMoves);
-            }
+            this->logicalBoard.makeMove(currentMoves, oponent_moves);
 
             // obtengo el puntaje en el estado resultante de haber ejecutado la jugada
             double currentScore = this->EvaluateBoard(this->logicalBoard.getState());
-
             if (currentScore > maxScore) {
                 // si esta jugada me dio mejor puntaje que la ultima,
                 // actualizo el puntaje maximo y la jugada que lo hizo

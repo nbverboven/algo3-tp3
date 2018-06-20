@@ -1,16 +1,23 @@
-all: greedy_player busqueda_local optimize_genomes
+CXX = g++
+CXXFLAGS = -Wall -Wextra -pedantic -ggdb -std=c++11
+EXE = greedy_player busqueda_local #optimize_genomes
+SRC = $(filter-out main.cpp BusquedaLocal.cpp OptimizeGenomes.cpp GraspPlayer.cpp, $(wildcard *.cpp))
+HEADERS = $(wildcard *.h, *hpp)
+OBJS = $(SRC:.cpp=.o)
 
-greedy_player: GreedyPlayer.cpp GenericPlayer.hpp LogicalBoard.cpp Util.cpp board_status.hpp main.cpp
-	g++ -ggdb -std=c++11 GreedyPlayer.cpp -c
-	g++ -ggdb -std=c++11 LogicalBoard.cpp -c
-	g++ -ggdb -std=c++11 Util.cpp -c
-	g++ -ggdb -std=c++11 LogicalBoard.o GreedyPlayer.o Util.o main.cpp -o greedy_player
+.PHONY: all clean
 
-busqueda_local: BusquedaLocal.cpp
-	g++ -ggdb -O3 -Wall -Wextra -pedantic -std=c++11 BusquedaLocal.cpp -o busqueda_local
+all: $(EXE)
 
-optimize_genomes:
-	g++ -ggdb -O3 -Wall -Wextra -pedantic -std=c++11 OptimizeGenomes.cpp -o optimize_genomes
+greedy_player: $(OBJS) $(HEADERS) main.cpp
+	$(CXX) $(CXXFLAGS) $(OBJS) main.cpp -o $@
+
+busqueda_local: $(OBJS) $(HEADERS) BusquedaLocal.cpp
+	$(CXX) $(CXXFLAGS) $(OBJS) BusquedaLocal.cpp -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
-	rm -f greedy_player busqueda_local *.o *~ *.pyc
+	rm -f $(OBJS) $(EXE) *.pyc
+

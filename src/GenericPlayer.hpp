@@ -200,7 +200,7 @@ public:
 			boardPoints += (this->_genome).genic_values[7] * ballDistanceToRivalGoal; //.distance_ball_oponent_goal
 		}
 
-		// agrego la distancia de la pelota al arco propio (si la tenemos nosotros)
+		// agrego la distancia de la pelota al arco propio (si la tienen ellos)
 		bool theirBall = false;
 		for (const player_status& p: board.oponent_team) {
 			if (p.in_possession) {
