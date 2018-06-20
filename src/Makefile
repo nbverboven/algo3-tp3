@@ -19,5 +19,5 @@ busqueda_local: $(OBJS) $(HEADERS) BusquedaLocal.cpp
 	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
-	rm -f $(OBJS) $(EXE)
+	rm -f $(OBJS) $(EXE) *.pyc
 
