@@ -18,44 +18,24 @@
 */
 struct genome
 {
-	genome() : ball_possession(1),
-	           ball_in_oponent_possession(-1),
-	           ball_free(-0.1),
-	           goal_distance(-0.4),
-	           ball_distance(0.46),
-	           oponent_with_ball_distance(-0.5),
-	           dispersion(0.1),
-	           distance_ball_oponent_goal(0.1),
-	           distance_ball_our_goal(0.1) {}
+	genome() {}
+	genome(const std::vector<double> &v) : genic_values(v) {}
 
-	genome(double ball_possession,
-	       double ball_in_oponent_possession,
-	       double ball_free,
-	       double goal_distance,
-	       double ball_distance,
-	       double oponent_with_ball_distance,
-	       double dispersion,
-	       double distance_ball_oponent_goal,
-	       double distance_ball_our_goal)
-    : ball_possession(ball_possession),
-      ball_in_oponent_possession(ball_in_oponent_possession),
-      ball_free(ball_free),
-      goal_distance(goal_distance),
-      ball_distance(ball_distance),
-      oponent_with_ball_distance(oponent_with_ball_distance),
-      dispersion(dispersion),
-      distance_ball_oponent_goal(distance_ball_oponent_goal),
-      distance_ball_our_goal(distance_ball_our_goal) {}
-
-    double ball_possession;
-    double ball_in_oponent_possession;
-    double ball_free;
-    double goal_distance;
-    double ball_distance;
-    double oponent_with_ball_distance;
-    double dispersion;
-    double distance_ball_oponent_goal;
-    double distance_ball_our_goal;
+    /**
+     * Caracteres evaluados por cada gen:
+     * genes[0]-> Mi equipo está en posesión de la pelota
+     * genes[1]-> La pelota está en posesión del equipo contrario
+     * genes[2]-> La pelota está libre en el campo (ie, no la tiene ningún jugador)
+     * genes[3]-> Si alguno de mis jugadores tiene la pelota, la distancia entre este
+     *            y el arco rival
+     * genes[4]-> La distancia entre los jugadores de mi equipo y la pelota
+     * genes[5]-> La distancia entre mis jugadores y el jugador del equipo contrario
+     *            en posesión de la pelota
+     * genes[6]-> La distancia entre mis jugadores (dispersión)
+     * genes[7]-> La distancia entre la pelota y el arco rival
+     * genes[8]-> La distancia entre la pelota y mi arco
+     */
+    std::vector<double> genic_values = {1, -1, -0.1, -0.4, 0.46, -0.5, 1.0, -1.0};
 };
 
 
@@ -152,7 +132,7 @@ public:
 
 			dist = distance(ballPoss, playerPoss);
 			dist = (maxDistance - dist) / maxDistance;
-			boardPoints += dist*(this->_genome).ball_distance; //Notar que si tiene la pelota es 0;
+			boardPoints += dist*(this->_genome).genic_values[4]; // .ball_distance //Notar que si tiene la pelota es 0;
 
 			if(p.in_possession){
 
@@ -164,7 +144,7 @@ public:
 					}
 				}
 				mejor_dist = (maxDistance - mejor_dist) / maxDistance;
-				boardPoints += mejor_dist*(this->_genome).goal_distance; //Notar que si entro al arco es 0;
+				boardPoints += mejor_dist*(this->_genome).genic_values[3]; // .goal_distance; //Notar que si entro al arco es 0;
 
 			}else{
 				//Evaluo el equipo contrario
@@ -173,7 +153,7 @@ public:
 						std::pair<int,int> opPlayerPoss(op.i, op.j);
 
 						dist = distance(opPlayerPoss, playerPoss);
-						boardPoints += dist*(this->_genome).oponent_with_ball_distance;
+						boardPoints += dist*(this->_genome).genic_values[5]; // .oponent_with_ball_distance;
 						//Notar que si estoy con mi oponente es 0;
 					}
 				}
@@ -181,11 +161,11 @@ public:
 		}
 
 		if(inPossession){
-			boardPoints += (this->_genome).ball_possession;
+			boardPoints += (this->_genome).genic_values[0];// .ball_possession;
 		}else if(board.ball.is_free){
-			boardPoints += (this->_genome).ball_free;
+			boardPoints += (this->_genome).genic_values[2];// .ball_free;
 		}else{
-			boardPoints += (this->_genome).ball_in_oponent_possession;
+			boardPoints += (this->_genome).genic_values[1];// .ball_in_oponent_possession;
 		}
 
 		// agrego la dispersion como parametro
@@ -202,7 +182,7 @@ public:
 		}
 		dispersion = dispersion / (3*maxDistance);
 
-		boardPoints += (this->_genome).dispersion * dispersion;
+		boardPoints += (this->_genome).genic_values[6] * dispersion;// .dispersion
 
 		// agrego la distancia de la pelota al arco rival (si la tenemos nosotros)
 		bool ourBall = false;
@@ -217,7 +197,7 @@ public:
 			ballDistanceToRivalGoal = std::min(ballDistanceToRivalGoal, distance(ballPoss, oponentGoalPoss[1]));
 			ballDistanceToRivalGoal = std::min(ballDistanceToRivalGoal, distance(ballPoss, oponentGoalPoss[2]));
 			ballDistanceToRivalGoal = (maxDistance - ballDistanceToRivalGoal) / maxDistance;
-			boardPoints += this->_genome.distance_ball_oponent_goal * ballDistanceToRivalGoal;
+			boardPoints += (this->_genome).genic_values[7] * ballDistanceToRivalGoal; //.distance_ball_oponent_goal
 		}
 
 		// agrego la distancia de la pelota al arco propio (si la tenemos nosotros)
@@ -233,7 +213,7 @@ public:
 			ballDistanceToOurGoal = std::min(ballDistanceToOurGoal, distance(ballPoss, goalPoss[1]));
 			ballDistanceToOurGoal = std::min(ballDistanceToOurGoal, distance(ballPoss, goalPoss[2]));
 			ballDistanceToOurGoal = (maxDistance - ballDistanceToOurGoal) / maxDistance;
-			boardPoints += this->_genome.distance_ball_our_goal * ballDistanceToOurGoal;
+			boardPoints += (this->_genome).genic_values[8] * ballDistanceToOurGoal; //.distance_ball_our_goal
 		}
 		return boardPoints;
 	}

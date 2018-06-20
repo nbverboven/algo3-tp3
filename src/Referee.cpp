@@ -4,7 +4,7 @@
  * Constructor.
  */
 Referee::Referee(int columns, int rows, int steps,
-        static_player& team_A, static_player& team_B): team_A_(team_A), team_B_(team_B) {
+        GenericPlayer& team_A, GenericPlayer& team_B): team_A_(team_A), team_B_(team_B) {
 
     logicalBoard_ = LogicalBoard(columns, rows, team_A.getPlayers(), team_B.getPlayers());
     steps_ = steps;
