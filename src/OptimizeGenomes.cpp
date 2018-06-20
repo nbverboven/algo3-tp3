@@ -20,7 +20,8 @@ static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 std::ofstream log_file;
 
 /**
- * Loguea el genoma
+ * Loguea el genoma con una mejor visualización que un arreglo plano.
+ * Para debug.
  */
 void log(genome g){
     log_file << "ball_possession: " << g.genic_values[0] << std::endl;
@@ -100,6 +101,9 @@ std::vector<genome_fitness> EvaluarTodosGenomas(std::vector<genome>& population)
 int criterioTerminacionEnIteraciones=0;
 /**
  * Función que determina cuando terminar el algoritmo genético
+ * Por ahora estoy usando una cantidad fija de iteraciones pero podría usar
+ * Un criterio por convergencia, calidad de la población, entre otros.
+ * Cuando todo funcione OK lo cambio.
  */
 bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<genome_fitness>& populationFitness){
     bool cumpleCriterio = false;
@@ -155,7 +159,7 @@ std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &pop
     int a = (bestFitness>sndBestFitness)?sndBestFitness:bestFitness;
     int b = (bestFitness>sndBestFitness)?bestFitness:sndBestFitness;
 
-    //Borro los genomas seleccionados primero b, luego a 
+    //Borro los genomas seleccionados primero b (mayor), luego a (no cambia el indice)
     population.erase(population.begin() + b);
     populationFitness.erase(populationFitness.begin() + b);
     population.erase(population.begin() + a);
@@ -195,6 +199,9 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
     return g1;
 }
 
+/**
+ * Muta los genomas devolviendo la mutación
+ */
 genome MutarGenomes(const genome& g1, const genome& g2){
     return g2; //TODO Mutar..
 }
@@ -227,7 +234,7 @@ int main() {
     }
 
     //Calculo el fitness de cada individuo
-    //genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
+    genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
     int logCantIteaciones = 0;
     //Definir una función de evaluación (fitness) para cada individuo
