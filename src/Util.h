@@ -32,6 +32,19 @@ struct genome
     std::vector<double> genic_values = {1, -1, -0.1, -0.4, 0.46, -0.5, 1.0, -1.0};
 };
 
+struct genome_fitness {
+    int games_played = 0;
+    int games_won = 0;
+    int games_lost = 0;
+    int goals = 0;
+    int opponent_goals = 0;
+};
+
+/**
+ * Para log
+ */
+std::ostream& operator<<(std::ostream &os, const genome_fitness& gf);
+
 /**
  * Calcula la distancia entre dos puntos
  */

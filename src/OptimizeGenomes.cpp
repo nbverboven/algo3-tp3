@@ -19,25 +19,6 @@ std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 std::ofstream log_file;
 
-struct genome_fitness {
-    int games_played = 0;
-    int games_won = 0;
-    int games_lost = 0;
-    int goals = 0;
-    int opponent_goals = 0;
-};
-
-std::ostream& operator<<(std::ostream &os, const genome_fitness& gf) {
-    os << "genome_fitness {" << std::endl;
-    os << "games_played: " << gf.games_played << std::endl;
-    os << "games_won: " << gf.games_won << std::endl;
-    os << "games_lost: " << gf.games_lost << std::endl;
-    os << "goals: " << gf.goals << std::endl;
-    os << "opponent_goals: " << gf.opponent_goals << std::endl;
-    os << "}" << std::endl;
-    return os;
-}
-
 /**
  * Loguea el genoma
  */
