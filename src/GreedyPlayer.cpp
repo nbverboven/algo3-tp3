@@ -34,7 +34,7 @@ static std::uniform_int_distribution<int> uid(0,8); // random dice
 void GreedyPlayer::make_move(const board_status& current_board, std::vector<player_move>& made_moves){
 
     //Update del tablero lógico con los ultimos movimientos
-    this->logicalBoard.updateBoard(current_board, this->team);
+    this->logicalBoard.updateBoard(current_board);
 
     //Acá voy a utilizar el tablero lógico para ver que los movimientos sean correctos y validos
     //También mi función de evaluar tablero, para saber si me sirve el movimiento
