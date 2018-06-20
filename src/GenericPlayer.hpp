@@ -170,7 +170,7 @@ public:
 
 		// agrego la dispersion como parametro
 		double dispersion = 0;
-		int myTeamSize = 3;
+		//int myTeamSize = 3;
 		for (int i = 0; i < 3; ++i) {
 			const player_status& p1 = board.team[i];
 			std::pair<int, int> p1Poss(p1.i, p1.j);
