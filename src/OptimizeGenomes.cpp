@@ -122,18 +122,44 @@ std::pair<genome,genome> SeleccionarIndividuos(std::vector<genome> &population){
     genome indiv1 = population[index];
     population.erase(population.begin() + index);
     
-    std::uniform_int_distribution<int> uid2(0,population.size()-1); // random dice
+    uid = std::uniform_int_distribution<int>(0, population.size()-1);
 
-    index = uid2(_generator);
+    index = uid(_generator);
     genome indiv2 = population[index];
     population.erase(population.begin() + index);
 
     return std::make_pair(indiv1, indiv2);
 }
 
+/**
+ * Cruza los genomas por los valores, aleatoreamente
+ * Al menos cambia 1 y no puede cambiar todos.
+ */
+genome CruzarGenomesValues(const genome& g1, const genome& g2){
+    int cantGenes = g1.genic_values.size();
+    genome cruza(g1);
+    std::uniform_int_distribution<int> uid(1,cantGenes-1); // random dice
 
-genome CruzarGenomes(const genome& g1, const genome& g2){
-    return g1; //TODO cruzar..
+    int iteraciones = uid(_generator);
+    for(int i=0; i<iteraciones; i++){
+        uid = std::uniform_int_distribution<int>(0, cantGenes-1);
+        int index = uid(_generator);
+        cruza.genic_values[index] = g2.genic_values[index];
+    }
+    
+    return cruza;
+}
+
+/**
+ * Cruza los genomas binariamente, aleatoriamente
+ */
+genome CruzarGenomesBinary(const genome& g1, const genome& g2){
+    std::vector<double> values1 = g1.genic_values;
+    std::vector<double> values2 = g2.genic_values;
+
+    //std::bitset
+
+    return g1;
 }
 
 genome MutarGenomes(const genome& g1, const genome& g2){
@@ -168,7 +194,7 @@ int main() {
     }
 
     //Calculo el fitness de cada individuo
-    genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
+    //genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
     int logCantIteaciones = 0;
     //Definir una función de evaluación (fitness) para cada individuo
@@ -188,7 +214,7 @@ int main() {
             std::pair<genome,genome> individuos = SeleccionarIndividuos(genomePopulation);
 
             //Cruzar (crossover) con cierta probabilidad los dos individuos obteniendo dos descendientes.
-            genome descendiente = CruzarGenomes(std::get<0>(individuos), std::get<1>(individuos));
+            genome descendiente = CruzarGenomesValues(std::get<0>(individuos), std::get<1>(individuos));
 
             //Mutar los dos descendientes con cierta probabilidad.
             genome mutacion = MutarGenomes(std::get<0>(individuos), std::get<1>(individuos));
