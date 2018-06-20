@@ -562,11 +562,11 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 	return ret;
 }
 
-
 /**
  * Devuelve la cantidad de goles que metió el equipo
+ * pasado por parametro.
  */
-unsigned int getTeamScore(std::string team){
+unsigned int LogicalBoard::getTeamScore(std::string team) {
 	assert(team==A || team==B);
 	return this->_score[team];
 }
