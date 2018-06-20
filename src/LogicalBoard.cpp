@@ -31,21 +31,12 @@ LogicalBoard::LogicalBoard(int columns, int rows, const std::vector<player> &tea
 	}
 }
 
-void LogicalBoard::updateBoard(const board_status& board, const std::string& team)
+void LogicalBoard::updateBoard(const board_status& board)
 {
 	this->_ball = board.ball;
 
-	//El tablero no sabe si es el equipo A o B ..
-	std::vector<player_status> _team_old;
-	std::vector<player_status> _oponent_team_old;
-
-	if(team == A){
-		_team_old = this->_team_A;
-		_oponent_team_old = this->_team_B;
-	}else{
-		_oponent_team_old = this->_team_A;
-		_team_old = this->_team_B;
-	}
+	std::vector<player_status> _team_old = this->_team_A;
+	std::vector<player_status> _oponent_team_old = this->_team_B;
 
 	std::vector<player_status> _team;
 	std::vector<player_status> _oponent_team;
@@ -76,14 +67,8 @@ void LogicalBoard::updateBoard(const board_status& board, const std::string& tea
 		_oponent_team.push_back(jg);
 	}
 
-	if(team == A){
-		this->_team_A = _team;
-		this->_team_B = _oponent_team;
-	}else{
-		this->_team_A = _oponent_team;
-		this->_team_B = _team;
-	}
-
+	this->_team_A = _team;
+	this->_team_B = _oponent_team;
 }
 
 // Asumo que moves está indexado por el id de los jugadores de team

@@ -30,7 +30,7 @@ public:
 	/**
 	 * Modifica los equipos y la pelota a la nueva instancia
 	 */
-	void updateBoard(const board_status& board, const std::string& team);
+	void updateBoard(const board_status& board);
 
 	/**
 	 * Realiza los movimientos de un equipo
@@ -70,7 +70,7 @@ public:
 
 	/**
 	 * Actualiza los puntajes dependiendo de si la pelota está en
-	 * alguno de los dos arcos o no. 
+	 * alguno de los dos arcos o no.
 	 * Asume que los jugadores no pueden entrar al arco con la pelota
 	 */
 	std::string updateScore();
@@ -78,7 +78,7 @@ public:
 	/**
 	 * Reinicia el estado del tablero tablero
 	 */
-	void reset(const std::vector<std::pair<int, int>> &position_A, 
+	void reset(const std::vector<std::pair<int, int>> &position_A,
 			   const std::vector<std::pair<int, int>> &position_B,
 			   std::string starting);
 
@@ -86,12 +86,12 @@ public:
 	 * Ubica a los jugadores en las posiciones iniciales y le da la pelota al equipo que empieza.
 	 * Asume que las posiciones son válidas
 	 */
-	void startingPositions(const std::vector<std::pair<int, int>> &position_A, 
+	void startingPositions(const std::vector<std::pair<int, int>> &position_A,
 						   const std::vector<std::pair<int, int>> &position_B,
 						   std::string starting);
 
 	/**
-	 * Devuelve true si el par (i, j) corresponde a una posición válida dentro del campo 
+	 * Devuelve true si el par (i, j) corresponde a una posición válida dentro del campo
 	 * de juego y false en caso contraro
 	 */
 	bool positionInBoard(int i, int j) const;
