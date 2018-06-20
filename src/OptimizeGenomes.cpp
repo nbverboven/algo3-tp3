@@ -12,8 +12,8 @@
 #define INITIAL_POPULATION 10   //Población inicial de la población de genomas
 #define GAMES_TO_PLAY 10        //Partidos a jugar
 
-std::random_device rd;
-std::mt19937 generator(rd());
+std::random_device _rd;
+std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 
 struct genome_fitness {
@@ -58,14 +58,13 @@ genome_fitness EvaluarGenoma(const genome& g, const std::vector<genome> &populat
 
     genome myGenomes = g;
     GreedyPlayer myTeam(columns, rows, steps, IZQUIERDA, players, opponents, myGenomes);
-    /*
+    
     for(int i=0; i<population.size(); i++){
         genome opponentGenomes = population[i];
         GreedyPlayer opponentTeam(columns, rows, steps, DERECHA, opponents, players, opponentGenomes);
-
-
+        //Jugar Partido..
     }
-    */
+    
 
     return fitness;
 }
@@ -107,13 +106,13 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
 std::pair<genome,genome> SeleccionarIndividuos(std::vector<genome> &population){
     std::uniform_int_distribution<int> uid(0,population.size()-1); // random dice
     
-    int index = uid(generator);
+    int index = uid(_generator);
     genome indiv1 = population[index];
     population.erase(population.begin() + index);
     
     std::uniform_int_distribution<int> uid2(0,population.size()-1); // random dice
 
-    index = uid2(generator);
+    index = uid2(_generator);
     genome indiv2 = population[index];
     population.erase(population.begin() + index);
 
@@ -153,7 +152,7 @@ int main() {
     for(int i=0; i<INITIAL_POPULATION; i++) {
         genome newGenome;
         for(int l=0; l<9; l++)
-            newGenome.genic_values[l] = urd(generator);
+            newGenome.genic_values[l] = urd(_generator);
         genomePopulation[i] = newGenome;
     }
 
