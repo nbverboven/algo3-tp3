@@ -15,8 +15,8 @@ greedy_player: $(OBJS) $(HEADERS) main.cpp
 busqueda_local: $(OBJS) $(HEADERS) BusquedaLocal.cpp
 	$(CXX) $(CXXFLAGS) $(OBJS) BusquedaLocal.cpp -o $@
 
-optimize_genomes:
-	g++ -ggdb -O3 -Wall -Wextra -pedantic -std=c++11 OptimizeGenomes.cpp -o optimize_genomes
+optimize_genomes: $(OBJS) $(HEADERS) OptimizeGenomes.cpp
+	$(CXX) $(CXXFLAGS) $(OBJS) OptimizeGenomes.cpp -o $@
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $<

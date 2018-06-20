@@ -1,12 +1,12 @@
 #include <vector>
 #include <fstream>
-#include "constants.hpp"
+//#include "constants.hpp"
 #include "Referee.h"
 #include "GreedyPlayer.h"
 
 #define COLUMNS 10
 #define ROWS 5
-#define STEPS 50
+#define STEPS 100
 
 //#define CONVERGENCE_CRITERION 7
 #define INITIAL_POPULATION 10   //Población inicial de la población de genomas
@@ -17,11 +17,11 @@ std::mt19937 generator(rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 
 struct genome_fitness {
-    int games_played;
-    int games_won;
-    int games_lost;
-    int goals;
-    int oponent_goals;
+    int games_played = 0;
+    int games_won = 0;
+    int games_lost = 0;
+    int goals = 0;
+    int oponent_goals = 0;
 };
 
 /**
@@ -45,6 +45,27 @@ void log(std::ofstream &f, genome g){
 genome_fitness EvaluarGenoma(const genome& g, const std::vector<genome> &population){
     genome_fitness fitness;
 
+    std::vector<player> players;
+    std::vector<player> opponents;
+	for (int i = 0; i < 3; ++i) {
+		players.push_back(player(i, 0.5));
+		opponents.push_back(player(i, 0.5));
+	}
+
+	int columns = COLUMNS;
+	int rows = ROWS;
+	int steps = STEPS;
+
+    genome myGenomes = g;
+    GreedyPlayer myTeam(columns, rows, steps, IZQUIERDA, players, opponents, myGenomes);
+    /*
+    for(int i=0; i<population.size(); i++){
+        genome opponentGenomes = population[i];
+        GreedyPlayer opponentTeam(columns, rows, steps, DERECHA, opponents, players, opponentGenomes);
+
+
+    }
+    */
 
     return fitness;
 }
