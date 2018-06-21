@@ -91,10 +91,34 @@ public:
 
 		double dist;
 		bool inPossession = false;
-		std::pair<int,int> ballPoss(board.ball.i, board.ball.j);
+
+		// si la pelota la tiene algun jugador, Elizondo.py no manda
+		// la posicion de la pelota en (board.ball.i, board.ball.j),
+		// sino que hay que obtenerla de la posicion del jugador que la tiene
+		bool someoneHasIt = false;
+		std::pair<int,int> ballPoss;
+		for (const player_status& p : board.team) {
+			if (p.in_possession) {
+				ballPoss.first = p.i;
+				ballPoss.second = p.j;
+				someoneHasIt = true;
+			}
+		}
+		for (const player_status& p : board.oponent_team) {
+			if (p.in_possession) {
+				ballPoss.first = p.i;
+				ballPoss.second = p.j;
+				someoneHasIt = true;
+			}
+		}
+		if (!someoneHasIt) {
+			ballPoss.first = board.ball.i;
+			ballPoss.second = board.ball.j;
+		}
+
 		std::vector<std::pair<int, int>> goalPoss = this->logicalBoard.getGoal(this->team);
 
-		std::string opTeam = (this->team==A)?B:A;
+		std::string opTeam = (this->team==A) ? B : A;
 		std::vector<std::pair<int, int>> oponentGoalPoss = this->logicalBoard.getGoal(opTeam);
 
 		//Evaluo mi equipo
@@ -142,7 +166,6 @@ public:
 
 		// agrego la dispersion como parametro
 		double dispersion = 0;
-		//int myTeamSize = 3;
 		for (int i = 0; i < 3; ++i) {
 			const player_status& p1 = board.team[i];
 			std::pair<int, int> p1Poss(p1.i, p1.j);
