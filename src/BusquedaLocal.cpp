@@ -30,8 +30,6 @@ int main()
 
 	// while (neighborhoods_visited < MAX_NUMBER_OF_SEARCHS && consecutive_equal_maxima_found < CONVERGENCE_CRITERION) {
 
-		GreedyPlayer my_team(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, current_genome);
-
 		/* La idea es guardar los parámetros usados, y cuántos partidos
 		   ganó mi equipo para esos valores */
 		std::vector<std::pair<genome, int>> game_results;
@@ -42,8 +40,7 @@ int main()
 		for (std::vector<double> &neighbor : current_neighborhood) {
 			// Sus valores dependerán del vecino en cuestión
 			genome test_genome(neighbor);
-			GreedyPlayer opponent(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, test_genome);
-	
+			
 			// Voy a asumir que mi equipo es el A
 			int games_won_by_my_team = 0;
 			int games_won_by_opponent = 0;
@@ -51,6 +48,8 @@ int main()
 			/* Pongo a los dos equipos a jugar una cantidad de partidos y 
 			   registro cuántos ganó cada uno */
 			for (int i = 0; i < GAMES_TO_PLAY; ++i) {
+			    GreedyPlayer my_team(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, current_genome);
+			    GreedyPlayer opponent(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, test_genome);
 				Referee ref(COLUMNS, ROWS, STEPS, my_team, opponent);
 				std::string the_winner = ref.runPlay(A);
 				
