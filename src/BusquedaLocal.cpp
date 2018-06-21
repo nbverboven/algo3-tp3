@@ -78,12 +78,12 @@ int main()
 			best_local_result = std::make_pair(current_genome, current_neighborhood.size());
 		}
 
-		std::cout << "================================================" << std::endl;
+		log_file << "================================================" << std::endl;
 		log_file << "VECINDARIO: " << neighborhoods_visited << std::endl;
 		log_file << "GENOMA MÁS GANADOR A NIVEL LOCAL: " << std::endl;
 		log_file << best_local_result.first << std::endl;
 		log_file << "PARTIDOS GANADOS: " << best_local_result.second << std::endl;
-		std::cout << "================================================" << std::endl;
+		log_file << "================================================" << std::endl;
 
 		// Si le gané a todos mis vecinos, soy el más mejor :D
 		// if (best_local_result.first.genic_values == current_genome.genic_values) {
