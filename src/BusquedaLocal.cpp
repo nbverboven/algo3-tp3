@@ -2,12 +2,12 @@
 #include "Referee.h"
 #include "GreedyPlayer.h"
 
-#define COLUMNS 10
 #define ROWS 5
+#define COLUMNS 10
 #define STEPS 50
 
-#define GAMES_TO_PLAY 10
-#define MAX_NUMBER_OF_SEARCHS 100
+#define GAMES_TO_PLAY 20
+#define MAX_NUMBER_OF_SEARCHS 25
 #define CONVERGENCE_CRITERION 7
 
 int main()
@@ -20,10 +20,7 @@ int main()
 		opponents.push_back(player(i, 0.5));
 	}
 
-	// Creo un genoma con valores por defecto
 	genome current_genome;
-
-	// Contadores varios
 	int neighborhoods_visited = 0;
 	int consecutive_equal_maxima_found = 0;
 	int previous_maximum = 0;
@@ -31,7 +28,7 @@ int main()
 	std::ofstream log_file;
 	log_file.open("log/local_search.log");
 
-	while (neighborhoods_visited < MAX_NUMBER_OF_SEARCHS && consecutive_equal_maxima_found < CONVERGENCE_CRITERION) {
+	// while (neighborhoods_visited < MAX_NUMBER_OF_SEARCHS && consecutive_equal_maxima_found < CONVERGENCE_CRITERION) {
 
 		GreedyPlayer my_team(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, current_genome);
 
@@ -42,8 +39,9 @@ int main()
 		/* Obtengo el vecindario del current_genome y lo recorro
 		   exhaustivamente buscando algún genoma que mejore el mío */
 		std::vector<std::vector<double>> current_neighborhood = getNeighborhood(current_genome);
-		for (std::vector<double> neighbor : current_neighborhood) {
-			genome test_genome(neighbor); // Sus valores dependerán del vecino en cuestión
+		for (std::vector<double> &neighbor : current_neighborhood) {
+			// Sus valores dependerán del vecino en cuestión
+			genome test_genome(neighbor);
 			GreedyPlayer opponent(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, test_genome);
 	
 			// Voy a asumir que mi equipo es el A
@@ -67,16 +65,11 @@ int main()
 			// Agrego los genomas más ganadores que el mío a la lista de resultados
 			if (games_won_by_my_team <= games_won_by_opponent) {
 				game_results.push_back(std::make_pair(test_genome, games_won_by_opponent));
-
-				log_file << "GENOMA DEL OPONENTE: " << std::endl;
-				log_file << test_genome << std::endl;
-				log_file << "PARTIDOS GANADOS: " << std::endl;
-				log_file << games_won_by_opponent << std::endl;
 			}
 		}
 
-		/* Busco la combinación de parámetros que me haya ganado la 
-		   mayor cantidad de partidos*/
+		/* Busco la combinación de parámetros que haya ganado la 
+		   mayor cantidad de partidos contra mi equipo */
 		std::pair<genome, int> best_local_result;
 		if (!game_results.empty()) {
 			best_local_result = maximum(game_results);
@@ -85,14 +78,17 @@ int main()
 			best_local_result = std::make_pair(current_genome, current_neighborhood.size());
 		}
 
-		log_file << "GENOMA: " << std::endl;
+		std::cout << "================================================" << std::endl;
+		log_file << "VECINDARIO: " << neighborhoods_visited << std::endl;
+		log_file << "GENOMA MÁS GANADOR A NIVEL LOCAL: " << std::endl;
 		log_file << best_local_result.first << std::endl;
 		log_file << "PARTIDOS GANADOS: " << best_local_result.second << std::endl;
+		std::cout << "================================================" << std::endl;
 
 		// Si le gané a todos mis vecinos, soy el más mejor :D
-		if (best_local_result.first.genic_values == current_genome.genic_values) {
-			break;
-		}
+		// if (best_local_result.first.genic_values == current_genome.genic_values) {
+		// 	break;
+		// }
 
 		// Veo si puedo estar convergiendo en un máximo local
 		int max_local_games_won = best_local_result.second;
@@ -107,9 +103,10 @@ int main()
 
 		current_genome = best_local_result.first;
 		++neighborhoods_visited;
-	}
+	// }
 
 	log_file.close();
 
 	return 0;
 }
+
