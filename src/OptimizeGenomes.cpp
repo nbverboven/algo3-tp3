@@ -1,6 +1,7 @@
 #include <vector>
 #include <fstream>
 #include <ostream>
+#include <bitset>
 #include "constants.hpp"
 #include "Util.h"
 #include "Referee.h"
@@ -20,7 +21,8 @@ static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 std::ofstream log_file;
 
 /**
- * Loguea el genoma
+ * Loguea el genoma con una mejor visualización que un arreglo plano.
+ * Para debug.
  */
 void log(genome g){
     log_file << "ball_possession: " << g.genic_values[0] << std::endl;
@@ -100,6 +102,9 @@ std::vector<genome_fitness> EvaluarTodosGenomas(std::vector<genome>& population)
 int criterioTerminacionEnIteraciones=0;
 /**
  * Función que determina cuando terminar el algoritmo genético
+ * Por ahora estoy usando una cantidad fija de iteraciones pero podría usar
+ * Un criterio por convergencia, calidad de la población, entre otros.
+ * Cuando todo funcione OK lo cambio.
  */
 bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<genome_fitness>& populationFitness){
     bool cumpleCriterio = false;
@@ -115,7 +120,7 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
  * Selecciona dos individuos de la población de manera aleatoria
  * y los elimina de la población (Para que no se vuelvan a seleccionar)
  */
-std::pair<genome,genome> SeleccionarIndividuos(std::vector<genome> &population){
+std::pair<genome,genome> SeleccionarIndividuosRandom(std::vector<genome> &population){
     std::uniform_int_distribution<int> uid(0,population.size()-1); // random dice
     
     int index = uid(_generator);
@@ -127,6 +132,39 @@ std::pair<genome,genome> SeleccionarIndividuos(std::vector<genome> &population){
     index = uid(_generator);
     genome indiv2 = population[index];
     population.erase(population.begin() + index);
+
+    return std::make_pair(indiv1, indiv2);
+}
+
+/**
+ * Selecciona dos individuos de la población de manera aleatoria
+ * y los elimina de la población (Para que no se vuelvan a seleccionar)
+ */
+std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &population, std::vector<genome_fitness> &populationFitness){
+    int bestFitness = (populationFitness[0]>populationFitness[1])?0:1;
+    int sndBestFitness = (populationFitness[0]>populationFitness[1])?1:0;;
+
+    for(int i=2; i<population.size(); i++){
+        if(populationFitness[i] > populationFitness[bestFitness]){
+            sndBestFitness = bestFitness;
+            bestFitness = i;
+        }else if(populationFitness[i] > populationFitness[sndBestFitness]){
+            sndBestFitness = i;
+        }
+    }
+
+    genome indiv1 = population[bestFitness];
+    genome indiv2 = population[sndBestFitness];
+
+    //Veo que indice es mayor (a<b)
+    int a = (bestFitness>sndBestFitness)?sndBestFitness:bestFitness;
+    int b = (bestFitness>sndBestFitness)?bestFitness:sndBestFitness;
+
+    //Borro los genomas seleccionados primero b (mayor), luego a (no cambia el indice)
+    population.erase(population.begin() + b);
+    populationFitness.erase(populationFitness.begin() + b);
+    population.erase(population.begin() + a);
+    populationFitness.erase(populationFitness.begin() + a);
 
     return std::make_pair(indiv1, indiv2);
 }
@@ -157,18 +195,36 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
     std::vector<double> values1 = g1.genic_values;
     std::vector<double> values2 = g2.genic_values;
 
-    //std::bitset
+    log_file << "-------- CruzarGenomesBinary --------" << std::endl;
+
+    for(int j=0; j<values1.size(); j++){
+        unsigned long long bits = *reinterpret_cast<unsigned long long*>(&values1[j]);
+        std::bitset<sizeof(double) * 8> b(bits);
+        log_file << "in: " << values1[j] << " = "<< b <<  std::endl;
+
+        b[63] = 0;
+        bits = b.to_ullong();
+
+        *reinterpret_cast<unsigned long long*>(&values1[j]) = bits;
+
+        log_file << "out: " << values1[j] << " = "<< b <<  std::endl;
+
+    }
+
 
     return g1;
 }
 
+/**
+ * Muta los genomas devolviendo la mutación
+ */
 genome MutarGenomes(const genome& g1, const genome& g2){
     return g2; //TODO Mutar..
 }
 
 
 //int argc, char **argv 
-int main() { 
+int main() {
 
 	std::vector<player> players;
 	std::vector<player> opponents;
@@ -211,10 +267,10 @@ int main() {
             log_file << "Ciclo reproductivo nro " << i << std::endl;
             //Ciclo reproductivo
             //Selecciono dos individuos de la anterior generación.
-            std::pair<genome,genome> individuos = SeleccionarIndividuos(genomePopulation);
+            std::pair<genome,genome> individuos = SeleccionarIndividuosRandom(genomePopulation);
 
             //Cruzar (crossover) con cierta probabilidad los dos individuos obteniendo dos descendientes.
-            genome descendiente = CruzarGenomesValues(std::get<0>(individuos), std::get<1>(individuos));
+            genome descendiente = CruzarGenomesBinary(std::get<0>(individuos), std::get<1>(individuos));
 
             //Mutar los dos descendientes con cierta probabilidad.
             genome mutacion = MutarGenomes(std::get<0>(individuos), std::get<1>(individuos));
