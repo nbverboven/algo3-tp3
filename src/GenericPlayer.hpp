@@ -69,7 +69,7 @@ public:
 		}
 	}
 
-	void finish(std::string result) { }
+	void finish(std::string result) { std::string i=result; i.push_back('C'); }
 
 	std::vector<player> getPlayers() {
 		return this->players;

@@ -42,20 +42,20 @@ void log(genome g){
 void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePoss, std::vector<genome_fitness>& populationFitness){
     std::vector<player> players;
     std::vector<player> opponents;
-	for (int i = 0; i < 3; ++i) {
+	for (unsigned int i = 0; i < 3; ++i) {
 		players.push_back(player(i, 0.5));
 		opponents.push_back(player(i, 0.5));
 	}
 
     GreedyPlayer myTeam(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, population[genomePoss]);
     
-    for(int oppGenomePoss=genomePoss+1; oppGenomePoss<population.size(); oppGenomePoss++){
+    for (unsigned int oppGenomePoss=genomePoss+1; oppGenomePoss<population.size(); oppGenomePoss++){
         log_file << "Partido contra genoma nro " << oppGenomePoss << std::endl;
         GreedyPlayer opponentTeam(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, population[oppGenomePoss]);
 
         /* Pongo a los dos equipos a jugar una cantidad de partidos y 
             registro cuántos ganó cada uno */
-        for (int l=0; l < GAMES_TO_PLAY; l++) {
+        for (unsigned int l=0; l < GAMES_TO_PLAY; l++) {
             //std::cout<< "Partido nro " << l << std::endl;
             Referee ref(COLUMNS, ROWS, STEPS, myTeam, opponentTeam);
             std::string the_winner = ref.runPlay(A);
@@ -144,7 +144,7 @@ std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &pop
     int bestFitness = (populationFitness[0]>populationFitness[1])?0:1;
     int sndBestFitness = (populationFitness[0]>populationFitness[1])?1:0;;
 
-    for(int i=2; i<population.size(); i++){
+    for(unsigned int i=2; i<population.size(); i++){
         if(populationFitness[i] > populationFitness[bestFitness]){
             sndBestFitness = bestFitness;
             bestFitness = i;
