@@ -24,16 +24,18 @@ std::ofstream log_file;
  * Loguea el genoma con una mejor visualización que un arreglo plano.
  * Para debug.
  */
-void log(genome g){
-    log_file << "ball_possession: " << g.genic_values[0] << std::endl;
-    log_file << "ball_in_oponent_possession: " << g.genic_values[1] << std::endl;
-    log_file << "ball_free: " << g.genic_values[2] << std::endl;
-    log_file << "goal_distance: " << g.genic_values[3] << std::endl;
-    log_file << "ball_distance: " << g.genic_values[4] << std::endl;
-    log_file << "oponent_with_ball_distance: " << g.genic_values[5] << std::endl;
-    log_file << "dispersion: " << g.genic_values[6] << std::endl;
-    log_file << "distance_ball_oponent_goal: " << g.genic_values[7] << std::endl;
-    log_file << "distance_ball_our_goal: " << g.genic_values[8] << std::endl;
+void log(std::ostream& o,genome g){
+    o << "Genome {" << std::endl;
+    o << " ball_possession: " << g.genic_values[0] << std::endl;
+    o << " ball_in_oponent_possession: " << g.genic_values[1] << std::endl;
+    o << " ball_free: " << g.genic_values[2] << std::endl;
+    o << " goal_distance: " << g.genic_values[3] << std::endl;
+    o << " ball_distance: " << g.genic_values[4] << std::endl;
+    o << " oponent_with_ball_distance: " << g.genic_values[5] << std::endl;
+    o << " dispersion: " << g.genic_values[6] << std::endl;
+    o << " distance_ball_oponent_goal: " << g.genic_values[7] << std::endl;
+    o << " distance_ball_our_goal: " << g.genic_values[8] << std::endl;
+    o << "}"<<std::endl;
 }
 
 /**
@@ -50,13 +52,12 @@ void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePos
     GreedyPlayer myTeam(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, population[genomePoss]);
     
     for (unsigned int oppGenomePoss=genomePoss+1; oppGenomePoss<population.size(); oppGenomePoss++){
-        log_file << "Partido contra genoma nro " << oppGenomePoss << std::endl;
+        log_file << "Partidos contra genoma nro " << oppGenomePoss << std::endl;
         GreedyPlayer opponentTeam(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, population[oppGenomePoss]);
 
         /* Pongo a los dos equipos a jugar una cantidad de partidos y 
             registro cuántos ganó cada uno */
         for (unsigned int l=0; l < GAMES_TO_PLAY; l++) {
-            //std::cout<< "Partido nro " << l << std::endl;
             Referee ref(COLUMNS, ROWS, STEPS, myTeam, opponentTeam);
             std::string the_winner = ref.runPlay(A);
 
@@ -286,7 +287,7 @@ int main() {
     }
 
     //Calculo el fitness de cada individuo
-    //genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
+    genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
     int logCantIteaciones = 0;
     //Definir una función de evaluación (fitness) para cada individuo
@@ -322,6 +323,20 @@ int main() {
         genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
         logCantIteaciones++;
     }
+
+    int bestFitness = 0;
+    for(unsigned int i=1; i<genomePopulation.size(); i++){
+        if(genomePopulationFitness[i] > genomePopulationFitness[bestFitness])
+            bestFitness = i;
+    }
+
+    //Devuelvo el mejor genoma por consola y log
+    std::cout << "----------  Genoma resultante ----------" << std::endl;
+    log( std::cout, genomePopulation[bestFitness]);
+    std::cout << genomePopulationFitness[bestFitness];
+    log_file << "----------  Genoma resultante ----------" << std::endl;
+    log( log_file, genomePopulation[bestFitness]);
+    log_file << genomePopulationFitness[bestFitness];
 
     //Cierro el archivo log
 	log_file.close();

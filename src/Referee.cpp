@@ -69,7 +69,7 @@ std::string Referee::runPlay(std::string startingTeam) {
  * Devuelve la cantidad de goles que metió el equipo
  */
 unsigned int Referee::getTeamScore(std::string team){
-    this->logicalBoard_.getTeamScore(team);
+    return this->logicalBoard_.getTeamScore(team);
 }
 
 /**
