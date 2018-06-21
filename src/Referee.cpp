@@ -34,6 +34,16 @@ std::string Referee::runPlay(std::string startingTeam) {
         // obtiene las proximas jugadas de A y B
         board_status boardStateA = this->logicalBoard_.getState();
         board_status boardStateB = this->logicalBoard_.getState();
+
+        // como ambos jugadores asumen que sus jugadores estan en boardState.team
+        // y los del rival en boardStateB.oponent_team, para el jugador B es necesario
+        // hacer un swap entre ellos
+
+        std::vector<player_status> team_copy = boardStateB.team;
+        std::vector<player_status> oponent_team_copy = boardStateB.oponent_team;
+        boardStateB.team = oponent_team_copy;
+        boardStateB.oponent_team = team_copy;
+
         std::vector<player_move> movesA, movesB;
         this->team_A_.make_move(boardStateA, movesA);
         this->team_B_.make_move(boardStateB, movesB);
