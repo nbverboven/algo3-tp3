@@ -199,7 +199,6 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
     std::vector<double> genicValues1 = g1.genic_values;
     std::vector<double> genicValues2 = g2.genic_values;
 
-    log_file << "-------- CruzarGenomesBinary --------" << std::endl;
     //Transformo los genomas a binario
     for(int i=0; i<cantGenes; i++){
         unsigned long long ull_bits1 = *reinterpret_cast<unsigned long long*>(&genicValues1[i]);
@@ -215,13 +214,12 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
     int cantCortes = uid(_generator);
     uid = std::uniform_int_distribution<int>(0,(cantGenes*BIT_SIZE)-1); // random dist
     std::vector<int> cortes;
-    log_file << "Cortes en";
+
     for(int i=0; i<cantCortes; i++){
         int indice_corte = uid(_generator);
         cortes.push_back(indice_corte);
-        log_file << " " << indice_corte;
     }
-    log_file << std::endl;
+    
     //Ordeno el vector de Cortes
     std::sort (cortes.begin(), cortes.end());
     int c = 0;
@@ -246,16 +244,8 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
     //Transformo el binario a genomas
     std::vector<double> newValues(cantGenes);
     for(int i=0; i<bitlist.size(); i++){        
-        unsigned long long ull_bits1 = *reinterpret_cast<unsigned long long*>(&genicValues1[i]);
-        unsigned long long ull_bits2 = *reinterpret_cast<unsigned long long*>(&genicValues2[i]);
-        std::bitset<sizeof(double)*8> v1(ull_bits1);
-        std::bitset<sizeof(double)*8> v2(ull_bits2);
-
         unsigned long long ull_bits = bitlist[i].to_ullong();
         *reinterpret_cast<unsigned long long*>(&newValues[i]) = ull_bits;
-        log_file << "in: " << g1.genic_values[i] << " = "<< v1 <<  std::endl;
-        log_file << "in: " << g2.genic_values[i] << " = "<< v2 <<  std::endl;
-        log_file << "out: " << newValues[i] << " = "<< bitlist[i] <<  std::endl;
     }
 
     return genome(newValues);
