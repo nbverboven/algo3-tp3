@@ -70,7 +70,7 @@ void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePos
             if (the_winner == A) {
                 populationFitness[genomePoss].games_won++;
                 populationFitness[oppGenomePoss].games_lost++;
-            } else {
+            } else if(the_winner == B){
                 populationFitness[genomePoss].games_lost++;
                 populationFitness[oppGenomePoss].games_won++;
             }
@@ -176,7 +176,7 @@ std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &pop
 genome CruzarGenomesValues(const genome& g1, const genome& g2){
     int cantGenes = g1.genic_values.size();
     genome cruza(g1);
-    std::uniform_int_distribution<int> uid(1,cantGenes-1); // random dice
+    std::uniform_int_distribution<int> uid(1,cantGenes-1); // random dist
 
     int iteraciones = uid(_generator);
     for(int i=0; i<iteraciones; i++){
@@ -192,27 +192,73 @@ genome CruzarGenomesValues(const genome& g1, const genome& g2){
  * Cruza los genomas binariamente, aleatoriamente
  */
 genome CruzarGenomesBinary(const genome& g1, const genome& g2){
-    std::vector<double> values1 = g1.genic_values;
-    std::vector<double> values2 = g2.genic_values;
+    int cantGenes = g1.genic_values.size();
+    int BIT_SIZE = sizeof(double)*8;// 64;
+    std::vector<std::bitset<sizeof(double)*8> > values1(cantGenes);
+    std::vector<std::bitset<sizeof(double)*8> > values2(cantGenes);
+    std::vector<double> genicValues1 = g1.genic_values;
+    std::vector<double> genicValues2 = g2.genic_values;
 
     log_file << "-------- CruzarGenomesBinary --------" << std::endl;
-
-    for(int j=0; j<values1.size(); j++){
-        unsigned long long bits = *reinterpret_cast<unsigned long long*>(&values1[j]);
-        std::bitset<sizeof(double) * 8> b(bits);
-        log_file << "in: " << values1[j] << " = "<< b <<  std::endl;
-
-        b[63] = 0;
-        bits = b.to_ullong();
-
-        *reinterpret_cast<unsigned long long*>(&values1[j]) = bits;
-
-        log_file << "out: " << values1[j] << " = "<< b <<  std::endl;
-
+    //Transformo los genomas a binario
+    for(int i=0; i<cantGenes; i++){
+        unsigned long long ull_bits1 = *reinterpret_cast<unsigned long long*>(&genicValues1[i]);
+        unsigned long long ull_bits2 = *reinterpret_cast<unsigned long long*>(&genicValues2[i]);
+        std::bitset<sizeof(double)*8> v1(ull_bits1);
+        std::bitset<sizeof(double)*8> v2(ull_bits2);
+        values1[i] = v1;
+        values2[i] = v2;
     }
 
+    //Me genero aleatoriamente indices de cortes
+    std::uniform_int_distribution<int> uid(1,(cantGenes)-1); // random dist
+    int cantCortes = uid(_generator);
+    uid = std::uniform_int_distribution<int>(0,(cantGenes*BIT_SIZE)-1); // random dist
+    std::vector<int> cortes;
+    log_file << "Cortes en";
+    for(int i=0; i<cantCortes; i++){
+        int indice_corte = uid(_generator);
+        cortes.push_back(indice_corte);
+        log_file << " " << indice_corte;
+    }
+    log_file << std::endl;
+    //Ordeno el vector de Cortes
+    std::sort (cortes.begin(), cortes.end());
+    int c = 0;
 
-    return g1;
+    int bitlistSize = cantGenes*BIT_SIZE;
+    std::vector<std::bitset<sizeof(double)*8> > bitlist(cantGenes);
+    bool useValues2 = false;
+    for(int i=0; i<bitlistSize; i++){
+        int l = i/BIT_SIZE;
+        int r = i%BIT_SIZE;
+
+        if(cortes[c]==i){
+            c++;
+            useValues2 = !useValues2;
+        }
+        if(useValues2)
+            bitlist[l][r] = values2[l][r];
+        else
+            bitlist[l][r] = values1[l][r];
+    }
+
+    //Transformo el binario a genomas
+    std::vector<double> newValues(cantGenes);
+    for(int i=0; i<bitlist.size(); i++){        
+        unsigned long long ull_bits1 = *reinterpret_cast<unsigned long long*>(&genicValues1[i]);
+        unsigned long long ull_bits2 = *reinterpret_cast<unsigned long long*>(&genicValues2[i]);
+        std::bitset<sizeof(double)*8> v1(ull_bits1);
+        std::bitset<sizeof(double)*8> v2(ull_bits2);
+
+        unsigned long long ull_bits = bitlist[i].to_ullong();
+        *reinterpret_cast<unsigned long long*>(&newValues[i]) = ull_bits;
+        log_file << "in: " << g1.genic_values[i] << " = "<< v1 <<  std::endl;
+        log_file << "in: " << g2.genic_values[i] << " = "<< v2 <<  std::endl;
+        log_file << "out: " << newValues[i] << " = "<< bitlist[i] <<  std::endl;
+    }
+
+    return genome(newValues);
 }
 
 /**
