@@ -46,7 +46,7 @@ struct genome_fitness {
         ret = ret || goals > other.goals;
         ret = ret || games_lost < other.games_lost;
         ret = ret || opponent_goals < other.opponent_goals;
-        return ; 
+        return ret;
     }
 };
 
