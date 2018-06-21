@@ -56,7 +56,7 @@ int main()
 				if (the_winner == A) {
 					++games_won_by_my_team;
 				}
-				else {
+				else if (the_winner == B) {
 					++games_won_by_opponent;
 				}
 			}
