@@ -513,7 +513,7 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 				ball.j = p.j;
 				ball.dir = pm.dir;
 				ball.steps = pm.steps;
-				ball.move(_move);
+				// ball.move(_move);
 
 				std::vector<std::pair<int,int>> ball_trajectory = ball.trajectory();
 
