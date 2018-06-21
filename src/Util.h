@@ -41,7 +41,12 @@ struct genome_fitness {
 
     bool operator>(const genome_fitness& other){
         //TODO fijarse como compararlos BIEN
-        return games_won > other.games_won; 
+        //c++ utiliza la lógica de cortocircuito
+        bool ret = games_won > other.games_won;
+        ret = ret || goals > other.goals;
+        ret = ret || games_lost < other.games_lost;
+        ret = ret || opponent_goals < other.opponent_goals;
+        return ; 
     }
 };
 
