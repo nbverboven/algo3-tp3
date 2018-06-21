@@ -50,7 +50,7 @@ void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePos
 	}
 
     GreedyPlayer myTeam(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, population[genomePoss]);
-    
+    bool runFirstTeamA = true;
     for (unsigned int oppGenomePoss=genomePoss+1; oppGenomePoss<population.size(); oppGenomePoss++){
         log_file << "Partidos contra genoma nro " << oppGenomePoss << std::endl;
         GreedyPlayer opponentTeam(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, population[oppGenomePoss]);
@@ -59,7 +59,12 @@ void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePos
             registro cuántos ganó cada uno */
         for (unsigned int l=0; l < GAMES_TO_PLAY; l++) {
             Referee ref(COLUMNS, ROWS, STEPS, myTeam, opponentTeam);
-            std::string the_winner = ref.runPlay(A);
+            std::string the_winner;
+            if(runFirstTeamA)
+                the_winner = ref.runPlay(A);
+            else
+                the_winner = ref.runPlay(B);
+            runFirstTeamA = !runFirstTeamA;
 
             populationFitness[genomePoss].games_played++;
             populationFitness[oppGenomePoss].games_played++;
