@@ -1,6 +1,7 @@
 #include <vector>
 #include <fstream>
 #include <ostream>
+#include <bitset>
 #include "constants.hpp"
 #include "Util.h"
 #include "Referee.h"
@@ -194,7 +195,22 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
     std::vector<double> values1 = g1.genic_values;
     std::vector<double> values2 = g2.genic_values;
 
-    //std::bitset
+    log_file << "-------- CruzarGenomesBinary --------" << std::endl;
+
+    for(int j=0; j<values1.size(); j++){
+        unsigned long long bits = *reinterpret_cast<unsigned long long*>(&values1[j]);
+        std::bitset<sizeof(double) * 8> b(bits);
+        log_file << "in: " << values1[j] << " = "<< b <<  std::endl;
+
+        b[63] = 0;
+        bits = b.to_ullong();
+
+        *reinterpret_cast<unsigned long long*>(&values1[j]) = bits;
+
+        log_file << "out: " << values1[j] << " = "<< b <<  std::endl;
+
+    }
+
 
     return g1;
 }
@@ -208,7 +224,7 @@ genome MutarGenomes(const genome& g1, const genome& g2){
 
 
 //int argc, char **argv 
-int main() { 
+int main() {
 
 	std::vector<player> players;
 	std::vector<player> opponents;
@@ -234,7 +250,7 @@ int main() {
     }
 
     //Calculo el fitness de cada individuo
-    genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
+    //genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
     int logCantIteaciones = 0;
     //Definir una función de evaluación (fitness) para cada individuo
@@ -254,7 +270,7 @@ int main() {
             std::pair<genome,genome> individuos = SeleccionarIndividuosRandom(genomePopulation);
 
             //Cruzar (crossover) con cierta probabilidad los dos individuos obteniendo dos descendientes.
-            genome descendiente = CruzarGenomesValues(std::get<0>(individuos), std::get<1>(individuos));
+            genome descendiente = CruzarGenomesBinary(std::get<0>(individuos), std::get<1>(individuos));
 
             //Mutar los dos descendientes con cierta probabilidad.
             genome mutacion = MutarGenomes(std::get<0>(individuos), std::get<1>(individuos));
