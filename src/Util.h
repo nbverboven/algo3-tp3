@@ -30,6 +30,7 @@ struct genome
      * genes[8]-> La distancia entre la pelota y mi arco
      */
     std::vector<double> genic_values = {1, -1, -0.1, -0.4, 0.46, -0.5, 1.0, 1.0, -1.0};
+    //Algoritmo genético: std::vector<double> genic_values = {0.151093, -0.953879, 0.00476067, -0.751713, 0.371691, -0.38677, 0.204654, 0.74608, 0.851888};
 };
 
 struct genome_fitness {

@@ -24,7 +24,7 @@ std::ofstream log_file;
  * Loguea el genoma con una mejor visualización que un arreglo plano.
  * Para debug.
  */
-void log(std::ostream& o,genome g){
+void log(std::ostream& o, genome g){
     o << "Genome {" << std::endl;
     o << " ball_possession: " << g.genic_values[0] << std::endl;
     o << " ball_in_oponent_possession: " << g.genic_values[1] << std::endl;
@@ -116,7 +116,7 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
     bool cumpleCriterio = false;
 
     criterioTerminacionEnIteraciones++;
-    if(criterioTerminacionEnIteraciones > 1 )
+    if(criterioTerminacionEnIteraciones > 10 )
         cumpleCriterio = true;
 
     return cumpleCriterio;
@@ -338,9 +338,11 @@ int main() {
     //Devuelvo el mejor genoma por consola y log
     std::cout << "----------  Genoma resultante ----------" << std::endl;
     log( std::cout, genomePopulation[bestFitness]);
+    std::cout << genomePopulation[bestFitness] << std::endl;
     std::cout << genomePopulationFitness[bestFitness];
     log_file << "----------  Genoma resultante ----------" << std::endl;
     log( log_file, genomePopulation[bestFitness]);
+    log_file << genomePopulation[bestFitness];
     log_file << genomePopulationFitness[bestFitness];
 
     //Cierro el archivo log
