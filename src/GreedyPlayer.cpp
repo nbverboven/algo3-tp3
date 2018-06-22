@@ -79,7 +79,15 @@ void GreedyPlayer::make_move(const board_status& current_board, std::vector<play
             }
 
             // obtengo el puntaje en el estado resultante de haber ejecutado la jugada
-            double currentScore = this->EvaluateBoard(this->logicalBoard.getState());
+            board_status resulting_state = this->logicalBoard.getState();
+            if (this->team == B) {
+                // swapeo team y oponent_team porque getState los manda al reves
+                std::vector<player_status> team_copy = resulting_state.team;
+                std::vector<player_status> oponent_team_copy = resulting_state.oponent_team;
+                resulting_state.team = oponent_team_copy;
+                resulting_state.oponent_team = team_copy;
+            }
+            double currentScore = this->EvaluateBoard(resulting_state);
             if (currentScore > maxScore) {
                 // si esta jugada me dio mejor puntaje que la ultima,
                 // actualizo el puntaje maximo y la jugada que lo hizo
