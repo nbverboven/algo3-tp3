@@ -149,6 +149,7 @@ public:
 						std::pair<int,int> opPlayerPoss(op.i, op.j);
 
 						dist = distance(opPlayerPoss, playerPoss);
+						dist = (maxDistance - dist) / maxDistance;
 						boardPoints += dist*(this->_genome).genic_values[5]; // .oponent_with_ball_distance;
 						//Notar que si estoy con mi oponente es 0;
 					}
