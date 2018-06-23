@@ -25,20 +25,21 @@ std::vector<std::vector<double>> cart_product(std::vector<std::vector<double>>& 
 
 std::vector<std::vector<double>> getNeighborhood(genome &g) {
     std::vector<std::vector<double>> elInput;
+    double granularity = 0.2;
     for (double gene_value : g.genic_values) {
     	/* Chequeo los casos borde para que los valores resultantes
     	   no salgan del rango [0, 1] */
-    	if (gene_value == -1) {
-    		elInput.push_back({gene_value, gene_value+0.1});
+    	if (gene_value-granularity < -1) {
+    		elInput.push_back({-1, gene_value, gene_value+granularity});
     	}
-    	else if (gene_value == 1) {
-    		elInput.push_back({gene_value-0.1, gene_value});	
+    	else if (gene_value+granularity > 1) {
+    		elInput.push_back({gene_value-granularity, gene_value, 1});	
     	}
     	else {
-		    elInput.push_back({gene_value-0.1, gene_value, gene_value+0.1});
+		    elInput.push_back({gene_value-granularity, gene_value, gene_value+granularity});
     	}
     }
-    // Genero los vecinos son incluir al genoma que paso como parámetro
+    // Genero los vecinos sin incluir al genoma que paso como parámetro
     std::vector<std::vector<double>> result = cart_product(elInput);
     for (unsigned int i = 0; i < result.size(); ++i) {
     	if (result[i] == g.genic_values) {
@@ -46,14 +47,19 @@ std::vector<std::vector<double>> getNeighborhood(genome &g) {
     		result.pop_back();
     	}
     }
-    return result;
+    // Podo un poco para no recorrer miles de posibles vecinos
+    std::vector<std::vector<double>> result2;
+    for (unsigned int i = 0; i < result.size(); i+=50) {
+        result2.push_back(result[i]);
+    }
+    return result2;
 }
 
-std::pair<genome, int> maximum(std::vector<std::pair<genome, int>> &v) {
+std::pair<genome, game_series_info> maximum(std::vector<std::pair<genome, game_series_info>> &v) {
 	unsigned int max_index = 0;
 	unsigned int i = 1;
 	while (i < v.size()) {
-		if (v[i].second > v[max_index].second) {
+		if (v[i].second.games_won_by_B > v[max_index].second.games_won_by_B) {
 			max_index = i;
 		}
 		++i;
