@@ -51,6 +51,16 @@ struct genome_fitness {
     }
 };
 
+// Parecida al struct de Andy, pero mejor
+struct game_series_info {
+    int games_played = 0;
+    int games_won_by_A = 0;
+    int games_won_by_B = 0;
+    int tied_games = 0;
+    int points_scored_A = 0;
+    int points_scored_B = 0;
+};
+
 /**
  * Para log
  */
@@ -77,7 +87,7 @@ std::vector<std::vector<double>> getNeighborhood(genome &g);
  * Dado un vector de pares (genoma, partidos ganados), devuelve alguno de los
  * elementos con más partidos ganados
  */
-std::pair<genome, int> maximum(std::vector<std::pair<genome, int>> &v);
+std::pair<genome, game_series_info> maximum(std::vector<std::pair<genome, game_series_info>> &v);
 
 /**
  * Para imprimir en un log
