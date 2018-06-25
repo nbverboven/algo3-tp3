@@ -12,6 +12,8 @@
 #define STEPS 100
 
 //#define CONVERGENCE_CRITERION 7
+
+#define CRITERIO_TERMINACION_ITERACIONES 10
 #define INITIAL_POPULATION 10   //Población inicial de la población de genomas
 #define GAMES_TO_PLAY 5        //Partidos a jugar
 
@@ -116,7 +118,7 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
     bool cumpleCriterio = false;
 
     criterioTerminacionEnIteraciones++;
-    if(criterioTerminacionEnIteraciones > 10 )
+    if(criterioTerminacionEnIteraciones > CRITERIO_TERMINACION_ITERACIONES )
         cumpleCriterio = true;
 
     return cumpleCriterio;
@@ -261,6 +263,8 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
  * Muta los genomas devolviendo la mutación
  */
 genome MutarGenomes(const genome& g1, const genome& g2){
+    
+
     return g2; //TODO Mutar..
 }
 
