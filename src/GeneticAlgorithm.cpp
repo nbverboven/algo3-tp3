@@ -22,7 +22,7 @@ std::random_device local_rd;
 std::mt19937 local_generator(local_rd());
 
 
-std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation, CliArguments& arg){
+std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation, CliArguments& args) {
     //Calculo el fitness de cada individuo
     std::vector<genome_fitness> genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
@@ -34,7 +34,6 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
 
         //Producir una nueva generación
         std::vector<genome> newGenomePopulation;
-        std::vector<genome_fitness> newGenomePopulationFitness;
 
         int sizeCicloReproductivo = genomePopulation.size()/2;
         for(int i=0; i < sizeCicloReproductivo; i++){ //Ciclo reproductivo
@@ -42,9 +41,19 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
 
             //Selecciono dos individuos de la anterior generación.
             std::pair<genome,genome> individuos = SeleccionarIndividuosRandom(genomePopulation);
+            if (args.selectionMethod == SELECT_RANDOM) {
+                individuos = SeleccionarIndividuosRandom(genomePopulation);
+            } else {
+                individuos = SeleccionarIndividuosByFitness(genomePopulation, genomePopulationFitness, args);
+            }
 
             //Cruzo (crossover) con cierta probabilidad los dos individuos obteniendo un descendiente
-            genome descendiente = CruzarGenomesBinary(std::get<0>(individuos), std::get<1>(individuos));
+            genome descendiente;
+            if (args.crossOverMethod == CROSS_VALUES) {
+                descendiente = CruzarGenomesValues(std::get<0>(individuos), std::get<1>(individuos));
+            } else {
+                descendiente = CruzarGenomesBinary(std::get<0>(individuos), std::get<1>(individuos));
+            }
 
             //Mutar los dos individuos con cierta probabilidad.
             genome mutacion = MutarGenomes(std::get<0>(individuos), std::get<1>(individuos));
@@ -175,20 +184,31 @@ std::pair<genome,genome> SeleccionarIndividuosRandom(std::vector<genome> &popula
  * TODO: aca falta parametrizar que funcion de fitness (compareFitnessByWonGames/compareFitnessByLostGames)
  * se debe usar.
  */
-std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &population, std::vector<genome_fitness> &populationFitness){
+std::pair<genome,genome> SeleccionarIndividuosByFitness(
+    std::vector<genome> &population,
+    std::vector<genome_fitness> &populationFitness,
+    CliArguments args) {
+
     int bestFitness = (populationFitness[0]>populationFitness[1])?0:1;
     int sndBestFitness = (populationFitness[0]>populationFitness[1])?1:0;;
 
     for(unsigned int i=2; i<population.size(); i++){
-        //TODO: En caso de que se parametrize la función de fitness, acá debo cambiarla.
-        if(populationFitness[i].compareFitnessByWonGames(populationFitness[bestFitness])){
-            sndBestFitness = bestFitness;
-            bestFitness = i;
-
-        //TODO: En caso de que se parametrize la función de fitness, acá debo cambiarla.
-        }else if(populationFitness[i].compareFitnessByWonGames(populationFitness[sndBestFitness])){
-            sndBestFitness = i;
+        if (args.fitnessMethod == FITNESS_WON_GAMES) {
+            if(populationFitness[i].compareFitnessByWonGames(populationFitness[bestFitness])){
+                sndBestFitness = bestFitness;
+                bestFitness = i;
+            } else if(populationFitness[i].compareFitnessByWonGames(populationFitness[sndBestFitness])) {
+                sndBestFitness = i;
+            }
+        } else {
+            if(populationFitness[i].compareFitnessByLostGames(populationFitness[bestFitness])){
+                sndBestFitness = bestFitness;
+                bestFitness = i;
+            } else if(populationFitness[i].compareFitnessByLostGames(populationFitness[sndBestFitness])){
+                sndBestFitness = i;
+            }
         }
+
     }
 
     genome indiv1 = population[bestFitness];
