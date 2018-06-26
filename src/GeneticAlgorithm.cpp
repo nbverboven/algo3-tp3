@@ -40,7 +40,7 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
             // log_file << "Ciclo reproductivo nro " << i << std::endl;
 
             //Selecciono dos individuos de la anterior generación.
-            std::pair<genome,genome> individuos = SeleccionarIndividuosRandom(genomePopulation);
+            std::pair<genome,genome> individuos;
             if (args.selectionMethod == SELECT_RANDOM) {
                 individuos = SeleccionarIndividuosRandom(genomePopulation);
             } else {
