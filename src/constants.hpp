@@ -36,4 +36,16 @@ namespace POINTS {
     const int OPONENT_wBALL_DISTANCE = 3;
 }
 
+// variantes de fitness
+const std::string FITNESS_WON_GAMES = "WON";
+const std::string FITNESS_LOST_GAMES = "LOST";
+
+// variantes de crossover
+const std::string CROSS_VALUES = "VALUES";
+const std::string CROSS_BINARY = "BINARY";
+
+// variantes de selección
+const std::string SELECT_RANDOM = "RANDOM";
+const std::string SELECT_FITNESS = "FITNESS";
+
 #endif //CONSTANTS
