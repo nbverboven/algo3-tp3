@@ -22,7 +22,7 @@ std::random_device local_rd;
 std::mt19937 local_generator(local_rd());
 
 
-std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation){
+std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation, CliArguments& arg){
     //Calculo el fitness de cada individuo
     std::vector<genome_fitness> genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
@@ -169,8 +169,11 @@ std::pair<genome,genome> SeleccionarIndividuosRandom(std::vector<genome> &popula
 }
 
 /**
- * Selecciona dos individuos de la población de manera aleatoria
+ * Selecciona dos individuos de la población segun su fitness
  * y los elimina de la población (Para que no se vuelvan a seleccionar)
+ *
+ * TODO: aca falta parametrizar que funcion de fitness (compareFitnessByWonGames/compareFitnessByLostGames)
+ * se debe usar.
  */
 std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &population, std::vector<genome_fitness> &populationFitness){
     int bestFitness = (populationFitness[0]>populationFitness[1])?0:1;

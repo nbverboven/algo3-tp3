@@ -15,8 +15,18 @@ std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 std::ofstream log_file;
 
-//int argc, char **argv 
-int main() {
+int main(int argc, char **argv) {
+
+    if (argc != 4) {
+        std::cout << "uso: " << argv[0] << "fitnessMethod crossOverMethod selectionMethod" << std::endl;
+        return 1;
+    }
+
+    // obtiene los argumentos
+    CliArguments args;
+    args.fitnessMethod = std::string(argv[0]);
+    args.crossOverMethod = std::string(argv[1]);
+    args.selectionMethod = std::string(argv[2]);
 
 	std::vector<player> players;
 	std::vector<player> opponents;
@@ -41,7 +51,7 @@ int main() {
     }
 
     //Corre el algoritmo genético
-    std::vector<genome_fitness> genomePopulationFitness = RunGeneticAlgorithm(genomePopulation);
+    std::vector<genome_fitness> genomePopulationFitness = RunGeneticAlgorithm(genomePopulation, args);
 
     //Obtengo el mejor fitness
     int bestFitness = 0;

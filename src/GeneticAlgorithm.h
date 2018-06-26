@@ -8,7 +8,7 @@
 #include "constants.hpp"
 #include "Util.h"
 
-std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation);
+std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation, CliArguments& args);
 
 /**
  * Evalúa todos los genomas de la población
