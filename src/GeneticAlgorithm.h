@@ -32,7 +32,7 @@ bool CriterioTerminacion(std::vector<genome> &genomePopulation, std::vector<geno
  * Selecciona dos individuos de la población de manera aleatoria
  * y los elimina de la población (Para que no se vuelvan a seleccionar)
  */
-std::vector<genome> SeleccionarIndividuosRandom(std::vector<genome> &population);
+std::pair<genome,genome> SeleccionarIndividuosRandom(std::vector<genome> &population);
 
 /**
  * Selecciona dos individuos de la población de manera aleatoria
