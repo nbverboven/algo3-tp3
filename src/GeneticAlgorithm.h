@@ -8,13 +8,6 @@
 #include "constants.hpp"
 #include "Util.h"
 
-extern const int COLUMNS;
-extern const int ROWS;
-extern const int STEPS;
-extern const int CRITERIO_TERMINACION_ITERACIONES;
-extern const int GAMES_TO_PLAY; //Partidos a jugar
-
-
 std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation);
 
 /**

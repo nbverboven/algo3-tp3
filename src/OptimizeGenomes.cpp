@@ -8,14 +8,7 @@
 #include "GreedyPlayer.h"
 #include "GeneticAlgorithm.h"
 
-const int COLUMNS = 10;
-const int ROWS = 5;
-const int STEPS = 100;
-//const int CONVERGENCE_CRITERION = 7
-const int CRITERIO_TERMINACION_ITERACIONES = 10;
-const int INITIAL_POPULATION = 10;   //Población inicial de la población de genomas
-const int GAMES_TO_PLAY = 5;        //Partidos a jugar
-
+#define INITIAL_POPULATION  10  //Población inicial de la población de genomas
 
 
 std::random_device _rd;
@@ -51,6 +44,7 @@ int main() {
     //Corre el algoritmo genético
     std::vector<genome_fitness> genomePopulationFitness = RunGeneticAlgorithm(genomePopulation);
 
+    //Obtengo el mejor fitness
     int bestFitness = 0;
     for(unsigned int i=1; i<genomePopulation.size(); i++){
         //TODO: En caso de que se parametrize la función de fitness, acá debo cambiarla.

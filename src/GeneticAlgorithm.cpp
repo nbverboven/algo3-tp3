@@ -8,6 +8,13 @@
 #include "Referee.h"
 #include "GreedyPlayer.h"
 
+#define COLUMNS 10
+#define ROWS 5
+#define STEPS 100
+#define CRITERIO_TERMINACION_ITERACIONES 10
+#define PROBABILIDAD_MUTAR_GEN 0.1       //Probabilidad de que el gen mute
+#define GAMES_TO_PLAY 5                  //Partidos a jugar
+
 extern std::ofstream log_file;
 
 std::random_device local_rd;
@@ -282,7 +289,28 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
  * Muta los genomas devolviendo la mutación
  */
 genome MutarGenomes(const genome& g1, const genome& g2){
-    
+    std::uniform_int_distribution<int> uid(0,999); // random dist
+    int randomNumber = uid(local_generator);
+    genome resultante;
+
+    //Elijo que genoma voy a mutar
+    if(randomNumber%2 == 0){
+        resultante = g2;
+    }else{
+        resultante = g1;
+    }
+
+    std::uniform_real_distribution<float> urd(0.0,1.0); // random distribution
+    std::normal_distribution<double> normalDist(-1.0,1.0); //normal distribution
+    //Recorro todos los genes
+    for(int i=0; i<resultante.genic_values.size(); i++){
+        //Si el random es menor a la probabilidad, lo muto
+        float proba = urd(local_generator);
+        if(proba < PROBABILIDAD_MUTAR_GEN){
+            //al gen le sumo un numero de la distribución normal estándar
+            resultante.genic_values[i] + normalDist(local_generator);
+        }
+    }
 
     return g2; //TODO Mutar..
 }
