@@ -31,6 +31,7 @@ struct genome
      */
     std::vector<double> genic_values = {1, -1, -0.1, -0.4, 0.46, -0.5, 1.0, 1.0, -1.0};
     //Algoritmo genético: std::vector<double> genic_values = {0.151093, -0.953879, 0.00476067, -0.751713, 0.371691, -0.38677, 0.204654, 0.74608, 0.851888};
+
 };
 
 struct genome_fitness {
@@ -39,6 +40,9 @@ struct genome_fitness {
     int games_lost = 0;
     int goals = 0;
     int opponent_goals = 0;
+
+    bool compareFitnessByWonGames(const genome_fitness& other);
+    bool compareFitnessByLostGames(const genome_fitness& other);
 
     bool operator>(const genome_fitness& other){
         //TODO fijarse como compararlos BIEN
@@ -98,5 +102,11 @@ std::ostream& operator<<(std::ostream &os, const genome &g);
  * Para debugear
  */
 std::ostream& operator<<(std::ostream &os, const std::vector<std::vector<double>> &v);
+
+/**
+ * Loguea el genoma con una mejor visualización que un arreglo plano.
+ * Para debug.
+ */
+void log(std::ostream& o, genome g);
 
 #endif

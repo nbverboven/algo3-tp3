@@ -105,3 +105,35 @@ std::ostream& operator<<(std::ostream &os, const genome_fitness& gf) {
     os << "}" << std::endl;
     return os;
 }
+
+/**
+ * Loguea el genoma con una mejor visualización que un arreglo plano.
+ * Para debug.
+ */
+void log(std::ostream& o, genome g){
+    o << "Genome {" << std::endl;
+    o << " ball_possession: " << g.genic_values[0] << std::endl;
+    o << " ball_in_oponent_possession: " << g.genic_values[1] << std::endl;
+    o << " ball_free: " << g.genic_values[2] << std::endl;
+    o << " goal_distance: " << g.genic_values[3] << std::endl;
+    o << " ball_distance: " << g.genic_values[4] << std::endl;
+    o << " oponent_with_ball_distance: " << g.genic_values[5] << std::endl;
+    o << " dispersion: " << g.genic_values[6] << std::endl;
+    o << " distance_ball_oponent_goal: " << g.genic_values[7] << std::endl;
+    o << " distance_ball_our_goal: " << g.genic_values[8] << std::endl;
+    o << "}"<<std::endl;
+}
+
+bool genome_fitness::compareFitnessByWonGames(const genome_fitness& other){
+	//c++ utiliza la lógica de cortocircuito
+	bool ret = games_won > other.games_won;
+	ret = ret || goals > other.goals;
+	return ret;
+}
+
+bool genome_fitness::compareFitnessByLostGames(const genome_fitness& other){
+	//c++ utiliza la lógica de cortocircuito
+	bool ret = games_lost < other.games_lost;
+	ret = ret || opponent_goals < other.opponent_goals;
+	return ret;
+}
