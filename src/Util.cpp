@@ -33,7 +33,7 @@ std::vector<std::vector<double>> getNeighborhood(genome &g) {
     		elInput.push_back({-1, gene_value, gene_value+granularity});
     	}
     	else if (gene_value+granularity > 1) {
-    		elInput.push_back({gene_value-granularity, gene_value, 1});	
+    		elInput.push_back({gene_value-granularity, gene_value, 1});
     	}
     	else {
 		    elInput.push_back({gene_value-granularity, gene_value, gene_value+granularity});
@@ -125,15 +125,27 @@ void log(std::ostream& o, genome g){
 }
 
 bool genome_fitness::compareFitnessByWonGames(const genome_fitness& other){
-	//c++ utiliza la lógica de cortocircuito
-	bool ret = games_won > other.games_won;
-	ret = ret || goals > other.goals;
+    // si gane menos partidos que el rival, soy peor
+    bool ret;
+    if (games_won < other.games_won) {
+        ret = false;
+    } else {
+        // si gane mas partidos, soy mejor; caso contrario, desempato por
+        // goles a favor
+        ret = (games_won > other.games_won) ? true : goals > other.goals;
+    }
 	return ret;
 }
 
 bool genome_fitness::compareFitnessByLostGames(const genome_fitness& other){
-	//c++ utiliza la lógica de cortocircuito
-	bool ret = games_lost < other.games_lost;
-	ret = ret || opponent_goals < other.opponent_goals;
+    // si perdi mas partidos que el rival, soy peor
+    bool ret;
+	if (games_lost > other.games_lost) {
+        ret = false;
+    } else {
+        // si perdi menos partidos, soy mejor; caso contrario, desempato
+        // por goles en contra
+        ret = (games_lost < other.games_lost) ? true : opponent_goals < other.opponent_goals;
+    }
 	return ret;
 }
