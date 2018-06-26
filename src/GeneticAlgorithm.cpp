@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ostream>
 #include <bitset>
+#include <math.h>       /* modf */
 #include "constants.hpp"
 #include "Util.h"
 #include "Referee.h"
@@ -307,9 +308,10 @@ genome MutarGenomes(const genome& g1, const genome& g2){
         if(proba < PROBABILIDAD_MUTAR_GEN){
             log_file << "Altero el gen nro " << i << std::endl;
             //al gen le sumo un numero de la distribución normal estándar
+            double intpart;
             double valor = resultante.genic_values[i] + normalDist(local_generator);
-            //Normalizar el valor
-            resultante.genic_values[i] = valor;
+            //Normalizo el valor
+            resultante.genic_values[i] = std::modf(valor, &intpart);
         }
     }
 
