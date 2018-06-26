@@ -15,6 +15,11 @@ std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
 std::ofstream log_file;
 
+
+/**
+ * Uso del ejecutable con los parametros:
+ * ./optimize_genomes WON/LOST VALUES/BINARY RANDOM/FITNESS
+ */
 int main(int argc, char **argv) {
 
     if (argc != 4) {
@@ -56,9 +61,13 @@ int main(int argc, char **argv) {
     //Obtengo el mejor fitness
     int bestFitness = 0;
     for(unsigned int i=1; i<genomePopulation.size(); i++){
-        //TODO: En caso de que se parametrize la función de fitness, acá debo cambiarla.
-        if(genomePopulationFitness[i].compareFitnessByWonGames(genomePopulationFitness[bestFitness]))
-            bestFitness = i;
+        if (args.fitnessMethod == FITNESS_WON_GAMES) {
+            if(genomePopulationFitness[i].compareFitnessByWonGames(genomePopulationFitness[bestFitness]))
+                bestFitness = i;
+        } else {
+            if(genomePopulationFitness[i].compareFitnessByLostGames(genomePopulationFitness[bestFitness]))
+                bestFitness = i;
+        }
     }
 
     //Devuelvo el mejor genoma por consola y log
