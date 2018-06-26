@@ -39,7 +39,6 @@ int main() {
 
     //Población inicial
     std::vector<genome> genomePopulation(INITIAL_POPULATION);
-    std::vector<genome_fitness> genomePopulationFitness;
 
     //Inicializo los genomas con valores random
     for(int i=0; i<INITIAL_POPULATION; i++) {
@@ -49,41 +48,8 @@ int main() {
         genomePopulation[i] = newGenome;
     }
 
-    //Calculo el fitness de cada individuo
-    genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
-
-    int logCantIteaciones = 0;
-    //Definir una función de evaluación (fitness) para cada individuo
-    while( !CriterioTerminacion(genomePopulation, genomePopulationFitness) ){
-        log_file << "------------------ Iteración Nro " << logCantIteaciones <<" ------------------" << std::endl;
-        log_file << "Población: "<< genomePopulation.size() << std::endl;
-        //Producir una nueva generación
-        std::vector<genome> newGenomePopulation;
-        std::vector<genome_fitness> newGenomePopulationFitness;
-
-        int sizeCicloReproductivo = genomePopulation.size()/2;
-        for(int i=0; i < sizeCicloReproductivo; i++){ //Ciclo reproductivo
-            log_file << "Ciclo reproductivo nro " << i << std::endl;
-
-            //Selecciono dos individuos de la anterior generación.
-            std::pair<genome,genome> individuos = SeleccionarIndividuosRandom(genomePopulation);
-
-            //Cruzo (crossover) con cierta probabilidad los dos individuos obteniendo un descendiente
-            genome descendiente = CruzarGenomesBinary(std::get<0>(individuos), std::get<1>(individuos));
-
-            //Mutar los dos individuos con cierta probabilidad.
-            genome mutacion = MutarGenomes(std::get<0>(individuos), std::get<1>(individuos));
-
-            //Inserto los dos descendientes en la nueva generación.
-            newGenomePopulation.push_back(descendiente);
-            newGenomePopulation.push_back(mutacion);
-        }
-
-        genomePopulation = newGenomePopulation;
-        //Evalúlo todos los descendientes en la nueva generación
-        genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
-        logCantIteaciones++;
-    }
+    //Corre el algoritmo genético
+    std::vector<genome_fitness> genomePopulationFitness = RunGeneticAlgorithm(genomePopulation);
 
     int bestFitness = 0;
     for(unsigned int i=1; i<genomePopulation.size(); i++){
