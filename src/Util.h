@@ -82,7 +82,7 @@ double distance(const std::pair<int,int>& t1, const std::pair<int,int>& t2);
 std::vector<std::vector<double>> cart_product(std::vector<std::vector<double>>& v);
 
 /**
- * Dado un genoma, devuelve una matriz cuyas filas corresponden 
+ * Dado un genoma, devuelve una matriz cuyas filas corresponden
  * a sus vecinos
  */
 std::vector<std::vector<double>> getNeighborhood(genome &g);
@@ -108,5 +108,17 @@ std::ostream& operator<<(std::ostream &os, const std::vector<std::vector<double>
  * Para debug.
  */
 void log(std::ostream& o, genome g);
+
+/**
+ * Struct para obtener los parametros de entrada
+ * del programa de algoritmos geneticos: funciones de
+ * fitness, crossover y seleccion.
+ */
+struct CliArguments {
+    std::string fitnessMethod;
+    std::string crossOverMethod;
+    std::string selectionMethod;
+};
+
 
 #endif
