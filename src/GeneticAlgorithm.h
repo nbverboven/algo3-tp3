@@ -38,7 +38,7 @@ std::pair<genome,genome> SeleccionarIndividuosRandom(std::vector<genome> &popula
  * Selecciona dos individuos de la población de manera aleatoria
  * y los elimina de la población (Para que no se vuelvan a seleccionar)
  */
-std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &population, std::vector<genome_fitness> &populationFitness);
+std::pair<genome,genome> SeleccionarIndividuosByFitness(std::vector<genome> &population, std::vector<genome_fitness> &populationFitness, CliArguments args);
 
 /**
  * Cruza los genomas por los valores, aleatoreamente
