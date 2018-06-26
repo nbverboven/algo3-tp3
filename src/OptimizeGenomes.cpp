@@ -10,7 +10,6 @@
 
 #define INITIAL_POPULATION  10  //Población inicial de la población de genomas
 
-
 std::random_device _rd;
 std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice

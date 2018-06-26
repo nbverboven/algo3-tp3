@@ -300,17 +300,25 @@ genome MutarGenomes(const genome& g1, const genome& g2){
         resultante = g1;
     }
 
-    std::uniform_real_distribution<float> urd(0.0,1.0); // random distribution
+    log_file << "-- -- -- Mutando los Genomas -- -- -- " << std::endl;
+    log(log_file,resultante);
+
+    std::uniform_real_distribution<double> urd(0.0,1.0); // random distribution
     std::normal_distribution<double> normalDist(-1.0,1.0); //normal distribution
     //Recorro todos los genes
     for(int i=0; i<resultante.genic_values.size(); i++){
         //Si el random es menor a la probabilidad, lo muto
         float proba = urd(local_generator);
         if(proba < PROBABILIDAD_MUTAR_GEN){
+            log_file << "Altero el gen nro " << i << std::endl;
             //al gen le sumo un numero de la distribución normal estándar
-            resultante.genic_values[i] + normalDist(local_generator);
+            double valor = resultante.genic_values[i] + normalDist(local_generator);
+            //Normalizar el valor
+            resultante.genic_values[i] = valor;
         }
     }
+
+    log(log_file,resultante);
 
     return g2; //TODO Mutar..
 }
