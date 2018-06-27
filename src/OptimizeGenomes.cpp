@@ -13,8 +13,6 @@
 std::random_device _rd;
 std::mt19937 _generator(_rd());
 static std::uniform_real_distribution<double> urd(-1.0,1.0); // random dice
-std::ofstream log_file;
-
 
 /**
  * Uso del ejecutable con los parametros:
@@ -40,9 +38,6 @@ int main(int argc, char **argv) {
 		players.push_back(player(i, 0.5));
 		opponents.push_back(player(i, 0.5));
 	}
-
-    //Inicializo el archivo de Log
-	log_file.open("log/optimize_genomes.log");
 
     //Población inicial
     std::vector<genome> genomePopulation(INITIAL_POPULATION);
@@ -75,13 +70,6 @@ int main(int argc, char **argv) {
     log( std::cout, genomePopulation[bestFitness]);
     std::cout << genomePopulation[bestFitness] << std::endl;
     std::cout << genomePopulationFitness[bestFitness];
-    log_file << "----------  Genoma resultante ----------" << std::endl;
-    log( log_file, genomePopulation[bestFitness]);
-    log_file << genomePopulation[bestFitness];
-    log_file << genomePopulationFitness[bestFitness];
-
-    //Cierro el archivo log
-	log_file.close();
 
 	return 0;
 }

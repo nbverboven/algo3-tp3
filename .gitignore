@@ -6,4 +6,4 @@ src/log/*
 src/static_player
 src/greedy_player
 info.plist
-greedy_player.dSYM
+test1

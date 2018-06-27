@@ -41,8 +41,8 @@ struct genome_fitness {
     int goals = 0;
     int opponent_goals = 0;
 
-    bool compareFitnessByWonGames(const genome_fitness& other);
-    bool compareFitnessByLostGames(const genome_fitness& other);
+    bool compareFitnessByWonGames(const genome_fitness& other) const;
+    bool compareFitnessByLostGames(const genome_fitness& other) const;
 
     bool operator>(const genome_fitness& other){
         //TODO fijarse como compararlos BIEN

@@ -124,7 +124,7 @@ void log(std::ostream& o, genome g){
     o << "}"<<std::endl;
 }
 
-bool genome_fitness::compareFitnessByWonGames(const genome_fitness& other){
+bool genome_fitness::compareFitnessByWonGames(const genome_fitness& other) const {
     // si gane menos partidos que el rival, soy peor
     bool ret;
     if (games_won < other.games_won) {
@@ -137,7 +137,7 @@ bool genome_fitness::compareFitnessByWonGames(const genome_fitness& other){
 	return ret;
 }
 
-bool genome_fitness::compareFitnessByLostGames(const genome_fitness& other){
+bool genome_fitness::compareFitnessByLostGames(const genome_fitness& other) const {
     // si perdi mas partidos que el rival, soy peor
     bool ret;
 	if (games_lost > other.games_lost) {

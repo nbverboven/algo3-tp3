@@ -56,4 +56,9 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2);
  */
 genome MutarGenomes(const genome& g1, const genome& g2);
 
+/**
+ * Devuelve el indice del mejor genoma_fitness de la población
+ */
+int getIndexOfBestFitness(const std::vector<genome_fitness>& genomePopulationFitness, CliArguments& args);
+
 #endif

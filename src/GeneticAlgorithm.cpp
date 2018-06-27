@@ -16,21 +16,25 @@
 #define PROBABILIDAD_MUTAR_GEN 0.1       //Probabilidad de que el gen mute
 #define GAMES_TO_PLAY 5                  //Partidos a jugar
 
-extern std::ofstream log_file;
+std::ofstream log_file;
 
 std::random_device local_rd;
 std::mt19937 local_generator(local_rd());
 
 
 std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopulation, CliArguments& args) {
+    //Inicializo el archivo de Log
+	log_file.open("log/optimize_genomes.log");
+
     //Calculo el fitness de cada individuo
     std::vector<genome_fitness> genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
 
+    int bestFitness;
     int logCantIteaciones = 0;
     //Definir una función de evaluación (fitness) para cada individuo
     while( !CriterioTerminacion(genomePopulation, genomePopulationFitness) ){
-        // log_file << "------------------ Iteración Nro " << logCantIteaciones <<" ------------------" << std::endl;
-        // log_file << "Población: "<< genomePopulation.size() << std::endl;
+        log_file << "------------------ Iteración Nro " << logCantIteaciones <<" ------------------" << std::endl;
+        log_file << "Población: "<< genomePopulation.size() << std::endl;
 
         //Producir una nueva generación
         std::vector<genome> newGenomePopulation;
@@ -67,27 +71,53 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
         //Evalúlo todos los descendientes en la nueva generación
         genomePopulationFitness = EvaluarTodosGenomas(genomePopulation);
         logCantIteaciones++;
+
+        //Logueo el mejor genoma de la población
+        bestFitness = getIndexOfBestFitness(genomePopulationFitness, args);
+        log_file << "---------- Mejor Genoma de la población ----------" << std::endl;
+        log( log_file, genomePopulation[bestFitness]);
+        log_file << genomePopulation[bestFitness];
+        log_file << genomePopulationFitness[bestFitness];
     }
+
+    //Cierro el archivo log
+	log_file.close();
 
     return genomePopulationFitness;
 }
+
+
+int getIndexOfBestFitness(const std::vector<genome_fitness>& genomePopulationFitness, CliArguments& args){
+    int bestFitness = 0;
+    for(unsigned int i=1; i<genomePopulationFitness.size(); i++){
+        if (args.fitnessMethod == FITNESS_WON_GAMES) {
+            if(genomePopulationFitness[i].compareFitnessByWonGames(genomePopulationFitness[bestFitness]))
+                bestFitness = i;
+        } else {
+            if(genomePopulationFitness[i].compareFitnessByLostGames(genomePopulationFitness[bestFitness]))
+                bestFitness = i;
+        }
+    }
+}
+
 
 /**
  * Evalúa todos los genomas de la población
  */
 std::vector<genome_fitness> EvaluarTodosGenomas(std::vector<genome>& population){
-    // log_file << "--- --- Evaluar todos los genomas --- ---" << std::endl;
+    log_file << "------- Evaluando todos los genomas -------" << std::endl;
     std::vector<genome_fitness> populationFitness(population.size(), genome_fitness());
 
     for(unsigned int i=0; i<population.size(); i++) {
-        // log_file << "Evaluando genoma nro " << i << std::endl;
+        log_file << "Evaluando genoma nro " << i << std::endl;
         EvaluarGenoma(population, i,  populationFitness);
     }
 
-    // log_file << "--- --- Resultado de los genomas --- ---" << std::endl;
+    log_file << "--- --- Resultado de los genomas --- ---" << std::endl;
     for(auto gf : populationFitness){
-        // log_file << gf;
+        log_file << gf;
     }
+
 
     return populationFitness;
 }
@@ -107,7 +137,7 @@ void EvaluarGenoma(const std::vector<genome> &population, unsigned int genomePos
     GreedyPlayer myTeam(COLUMNS, ROWS, STEPS, IZQUIERDA, players, opponents, population[genomePoss]);
     bool runFirstTeamA = true;
     for (unsigned int oppGenomePoss=genomePoss+1; oppGenomePoss<population.size(); oppGenomePoss++){
-        // log_file << "Partidos contra genoma nro " << oppGenomePoss << std::endl;
+        log_file << "Partidos contra genoma nro " << oppGenomePoss << std::endl;
         GreedyPlayer opponentTeam(COLUMNS, ROWS, STEPS, DERECHA, opponents, players, population[oppGenomePoss]);
 
         /* Pongo a los dos equipos a jugar una cantidad de partidos y
