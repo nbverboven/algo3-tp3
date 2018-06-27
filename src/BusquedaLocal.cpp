@@ -57,10 +57,9 @@ int main(int argc, char const *argv[])
                registro cuántos ganó cada uno. Asumo que soy A */
             for (unsigned int game = 0; game < GAMES_TO_PLAY; ++game) {
                 Referee ref(COLUMNS, ROWS, STEPS, myTeam, opponentTeam);
-                std::string the_winner;
 
                 std::string initialTeam = runFirstTeamA ? A : B;
-                std::string winner = ref.runPlay(initialTeam);
+                std::string the_winner = ref.runPlay(initialTeam);
                 runFirstTeamA = !runFirstTeamA;
 
                 // Registro los resultados del partido
