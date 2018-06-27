@@ -377,5 +377,5 @@ genome MutarGenomes(const genome& g1, const genome& g2){
 
     // log(log_file,resultante);
 
-    return g2;
+    return resultante;
 }
