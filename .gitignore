@@ -7,3 +7,5 @@ src/static_player
 src/greedy_player
 info.plist
 test1
+test2
+test-*

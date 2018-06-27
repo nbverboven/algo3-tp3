@@ -76,7 +76,7 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
         bestFitness = getIndexOfBestFitness(genomePopulationFitness, args);
         log_file << "---------- Mejor Genoma de la población ----------" << std::endl;
         log( log_file, genomePopulation[bestFitness]);
-        log_file << genomePopulation[bestFitness];
+        log_file << genomePopulation[bestFitness] << std::endl;
         log_file << genomePopulationFitness[bestFitness];
     }
 
