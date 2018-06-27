@@ -43,7 +43,7 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
         for(int i=0; i < sizeCicloReproductivo; i++){ //Ciclo reproductivo
             // log_file << "Ciclo reproductivo nro " << i << std::endl;
 
-            //Selecciono dos individuos de la anterior generación.
+            //Selecciono dos individuos de la anterior generación.
             std::pair<genome,genome> individuos;
             if (args.selectionMethod == SELECT_RANDOM) {
                 individuos = SeleccionarIndividuosRandom(genomePopulation);
@@ -62,7 +62,7 @@ std::vector<genome_fitness> RunGeneticAlgorithm(std::vector<genome> genomePopula
             //Mutar los dos individuos con cierta probabilidad.
             genome mutacion = MutarGenomes(std::get<0>(individuos), std::get<1>(individuos));
 
-            //Inserto los dos descendientes en la nueva generación.
+            //Inserto los dos descendientes en la nueva generación.
             newGenomePopulation.push_back(descendiente);
             newGenomePopulation.push_back(mutacion);
         }
@@ -98,6 +98,7 @@ int getIndexOfBestFitness(const std::vector<genome_fitness>& genomePopulationFit
                 bestFitness = i;
         }
     }
+    return bestFitness;
 }
 
 
