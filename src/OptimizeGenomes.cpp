@@ -27,9 +27,9 @@ int main(int argc, char **argv) {
 
     // obtiene los argumentos
     CliArguments args;
-    args.fitnessMethod = std::string(argv[0]);
-    args.crossOverMethod = std::string(argv[1]);
-    args.selectionMethod = std::string(argv[2]);
+    args.fitnessMethod = std::string(argv[1]);
+    args.crossOverMethod = std::string(argv[2]);
+    args.selectionMethod = std::string(argv[3]);
 
 	std::vector<player> players;
 	std::vector<player> opponents;
