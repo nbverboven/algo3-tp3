@@ -29,8 +29,14 @@ struct genome
      * genes[7]-> La distancia entre la pelota y el arco rival
      * genes[8]-> La distancia entre la pelota y mi arco
      */
+    //Defaults
     std::vector<double> genic_values = {1, -1, -0.1, -0.4, 0.46, -0.5, 1.0, 1.0, -1.0};
-    //Algoritmo genético: std::vector<double> genic_values = {0.151093, -0.953879, 0.00476067, -0.751713, 0.371691, -0.38677, 0.204654, 0.74608, 0.851888};
+
+    //Algoritmo genético:
+    //WON VALUES RANDOM
+    //std::vector<double> genic_values = {0.151093, -0.953879, 0.00476067, -0.751713, 0.371691, -0.38677, 0.204654, 0.74608, 0.851888};
+    //LOST BINARY RANDOM
+    //std::vector<double> genic_values = {0.335159, -0.417247, -0.772011, -0.119115, 0.278561, -0.197128, 0.419488, 0.604275, 0.202187};
 
 };
 
