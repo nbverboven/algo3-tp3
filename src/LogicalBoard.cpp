@@ -504,7 +504,6 @@ bool LogicalBoard::isValidTeamMove(const std::vector<player_status>& team, const
 			}else if(!p.in_possession){
 				ret = false; //Quiere pasar la pelota pero no la tiene
 			}else{
-				move _move = MOVES[pm.dir];
 				// Mirar que el pase es válido: O sea que termina adentro de la cancha, en algún
 				// arco o cruza un arco (ya que va de a dos pasos por vez).
 				// Además, no puede ser más largo que M / 2
