@@ -333,7 +333,7 @@ genome CruzarGenomesBinary(const genome& g1, const genome& g2){
 
     //Transformo el binario a genomas
     std::vector<double> newValues(cantGenes);
-    for(int i=0; i<bitlist.size(); i++){
+    for(unsigned int i=0; i<bitlist.size(); i++){
         unsigned long long ull_bits = bitlist[i].to_ullong();
         *reinterpret_cast<unsigned long long*>(&newValues[i]) = ull_bits;
     }
@@ -362,7 +362,7 @@ genome MutarGenomes(const genome& g1, const genome& g2){
     std::uniform_real_distribution<double> urd(0.0,1.0); // random distribution
     std::normal_distribution<double> normalDist(-1.0,1.0); //normal distribution
     //Recorro todos los genes
-    for(int i=0; i<resultante.genic_values.size(); i++){
+    for(unsigned int i=0; i<resultante.genic_values.size(); i++){
         //Si el random es menor a la probabilidad, lo muto
         float proba = urd(local_generator);
         if(proba < PROBABILIDAD_MUTAR_GEN){
